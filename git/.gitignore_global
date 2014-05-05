@@ -1,0 +1,45 @@
+# .gitignore_global, set as excludesfile in .gitconfig
+
+# Operating system generated
+.AppleDouble
+.DS_Store
+.DS_Store?
+.Spotlight-V100
+.Trashes
+*.log
+
+# Compiled and executable
+*.a
+*.app
+*.dll
+*.dylib
+*.exe
+*.lib
+*.o
+*.out
+*.so
+*.so.*
+
+# Packages
+*.7z
+*.dmg
+*.gz
+*.iso
+*.rar
+*.tar
+*.zip
+
+# Databases
+*.sql
+*.sqlite
+
+# Node.js
+node_modules/
+
+# Bower
+bower_components/
+
+# Editors (Vim, Atom)
+*.swp
+.netrwhist
+tags
