@@ -16,15 +16,15 @@ sudo apt-get install libncurses5-dev gcc make git exuberant-ctags
 # and /usr/local/CrossPack-AVR is a symbolic link to the last version installed.
 # Several versions can therefore coexist. If you want only one version,
 # remove the old package from /usr/local/CrossPack-AVR-<version>.
-if [[ -z $(find /usr/local/ -name "CrossPack-AVR-20131216") ]]; then
-  # Install AVR Crosspack
-  echo "Installing /usr/local/CrossPack-AVR-<version>"
-  wget -O backups/CrossPack-AVR-20131216.dmg \
-    http://www.obdev.at/downloads/crosspack/CrossPack-AVR-20131216.dmg
-  hdiutil attach backups/CrossPack-AVR-20131216.dmg
-  sudo installer -package /Volumes/CrossPack-AVR/CrossPack-AVR.pkg \
-    -target LocalSystem
-  hdiutil detach "/Volumes/CrossPack-AVR"
-else
-  echo "/usr/local/CrossPack-AVR-<version> is already installed."
-fi
+#if [[ -z $(find /usr/local/ -name "CrossPack-AVR-20131216") ]]; then
+#  # Install AVR Crosspack
+#  echo "Installing /usr/local/CrossPack-AVR-<version>"
+#  wget -O backups/CrossPack-AVR-20131216.dmg \
+#    http://www.obdev.at/downloads/crosspack/CrossPack-AVR-20131216.dmg
+#  hdiutil attach backups/CrossPack-AVR-20131216.dmg
+#  sudo installer -package /Volumes/CrossPack-AVR/CrossPack-AVR.pkg \
+#    -target LocalSystem
+#  hdiutil detach "/Volumes/CrossPack-AVR"
+#else
+#  echo "/usr/local/CrossPack-AVR-<version> is already installed."
+#fi
