@@ -56,7 +56,7 @@ function install() {
   source bash/make_bash.sh
 
   # Install or upgrade Git and configuration files
-  #source git/make_git.sh
+  source git/make_git.sh
 
   # Vim
   source vim/make_vim.sh

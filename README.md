@@ -1,12 +1,9 @@
 # Overview
 
-**Note:** This repository is still in development, and is Mac OSX only at this time.
-Pull requests and issues are great if you have them.
+**Note:** This repository is still in development.
 
 ## OS environment setup & package updates for:
 *__In installation order:__*
-
-+ Homebrew
 
 + Bash _(w/ other basic shell utilities)_
 
@@ -16,7 +13,7 @@ Pull requests and issues are great if you have them.
 
 + TMUX
 
-+ Embedded C development environment
++ Embedded Linux dev environment
 
 + Python3 _(w/ SciPy.org stack, Octave, & oct2py)_
 
@@ -26,16 +23,14 @@ Pull requests and issues are great if you have them.
 
 + Google Chrome & Firefox applications (only if not already installed)
 
-+ OnyX system maintenance application (OSX 10.9)
-
-+ Mac OSX system defaults configuration
++ Ubuntu system defaults configuration
 
 ## Install:
 
 ``` bash
 cd ~
 
-git clone https://github.com/tobinquadros/dotfiles.git
+git clone https://github.com/tobinquadros/Ubuntu.git dotfiles
 
 cd ~/dotfiles
 
