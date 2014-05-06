@@ -1,0 +1,7 @@
+# dotfiles/.gitignore
+
+pathogen.vim
+backups
+bundle
+systags
+

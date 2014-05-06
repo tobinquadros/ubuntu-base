@@ -1,15 +1,14 @@
 #!/usr/bin/env bash
 # make_installer.sh
 
-# Convert file to .img from MacOSX command line
+# TODO: Get Ubuntu specific instructions for making installer, not OSX.
+
+# Convert file
 ls -la
 echo "Source: " && read SOURCE
 echo "Target: " && read TARGET
-hdiutil convert -format UDRW -o $TARGET $SOURCE -pmap
-mv ${TARGET}.dmg $TARGET
 
 # Choose a drive to put the installer on.
-diskutil list
 echo -n "Which disk would you like to put the installer on? (eg. disk2): " && read DISK
 if [[ $DISK =~ disk[0-9] ]]; then
   # Confirm disk selection before overwriting

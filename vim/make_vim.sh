@@ -9,7 +9,7 @@ sudo apt-get install -y cscope
 sudo apt-get install -y exuberant-ctags
 
 # Link vim directory to ~/.vim
-sudo ln -sf vim $HOME/.vim/
+ln -sd vim/ $HOME/.vim/
 ln -sf vim/vimrc $HOME/.vimrc
 
 # Create autoload directory and install current pathogen.vim.
