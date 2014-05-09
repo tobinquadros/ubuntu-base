@@ -2,6 +2,6 @@
 
 pathogen.vim
 backups
-bundle
+bundle/
 systags
 

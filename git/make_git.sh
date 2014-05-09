@@ -5,6 +5,6 @@
 sudo apt-get install -y git
 
 # Configure Git settings
-ln -sf git/.gitconfig $HOME/.gitconfig
-ln -sf git/.gitignore_global $HOME/.gitignore_global
+ln -sf $HOME/dotfiles/git/.gitconfig $HOME/.gitconfig
+ln -sf $HOME/dotfiles/git/.gitignore_global $HOME/.gitignore_global
 
