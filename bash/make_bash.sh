@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-# Install or upgrade basic Bash environment
 
-# Install updated Bash from homebrew
+# Install or upgrade the basic Bash environment
 sudo apt-get install -y bash
 sudo apt-get install -y bash-completion
 sudo apt-get install -y bash-doc
@@ -13,5 +12,6 @@ sudo apt-get install -y bash-doc
 #ln -sf $HOME/dotfiles/bash/.bashrc $HOME/.bashrc
 
 # Install other shell utilities
+sudo apt-get install -y build-essential
 sudo apt-get install -y curl
 sudo apt-get install -y tree

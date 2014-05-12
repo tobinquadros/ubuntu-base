@@ -48,26 +48,28 @@ function get_os_version() {
 function install() {
   echo "Install running..."
 
-  # TODO: See apt_preferences(5) manpage for better ways.
+  # TODO: See apt_preferences(5) manpage for better usages.
   # Update /etc/apt/sources.list repository indexes.
   sudo apt-get update
-  # Quietly install updates.
+  # Quietly install apt updates.
   sudo apt-get -q=2 upgrade
 
-  # Install or upgrade Bash, configuration files, and shell utilities
+  # Bash, and shell utilities
   source bash/make_bash.sh
 
-  # Install or upgrade Git and configuration files
+  # Git
   source git/make_git.sh
 
   # Vim
   source vim/make_vim.sh
 
   # TMUX
-  #source tmux/make_tmux.sh
+  source tmux/make_tmux.sh
 
-  # Embedded C development environment
-  #source embedded/make_embedded.sh
+  # Embedded development environments
+  source embedded/make_embedded_tools.sh
+  source embedded/make_avr.sh
+  source embedded/make_ti.sh
 
   # Install or upgrade Node.js and configuration files
   #source node/make_nodejs.sh
@@ -93,8 +95,8 @@ function clean_up() {
   sudo apt-get autoclean
   # Removes packages installed by other packages and are no longer needed.
   sudo apt-get autoremove
-  # Remove any configuration files left behind by packages.
-  dpkg --list |grep "^rc" | cut -d " " -f 3 | xargs sudo dpkg --purge
+  # Remove any configuration files left behind by packages, if they exist.
+  dpkg --list |grep "^rc" | cut -d " " -f 3 | xargs -r sudo dpkg --purge
 
   echo "OS settings complete."
   # Confirm a reboot to complete configurations or restart UI.
