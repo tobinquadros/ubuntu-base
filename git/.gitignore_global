@@ -1,8 +1,8 @@
 # .gitignore_global, set as excludesfile in .gitconfig
 
 # Operating system generated
-.Trashes
-*.log
+#.Trashes
+#*.log
 
 ## Compiled and executable
 #*.a
@@ -30,12 +30,12 @@
 #*.sqlite
 
 # Node.js
-node_modules/
+#node_modules/
 
 # Bower
-bower_components/
+#bower_components/
 
 # Editors (Vim)
-*.swp
-.netrwhist
-tags
+#*.swp
+#.netrwhist
+#tags

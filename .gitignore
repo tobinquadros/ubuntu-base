@@ -1,7 +1,12 @@
 # dotfiles/.gitignore
 
+# ~/dotfiles/ crap
+backups/
+
+# Vim crap
 pathogen.vim
-backups
 bundle/
+.netrwhist
 systags
+tags
 

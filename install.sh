@@ -48,9 +48,11 @@ function get_os_version() {
 function install() {
   echo "Install running..."
 
-  # Update from apt-get repositories
+  # TODO: See apt_preferences(5) manpage for better ways.
+  # Update /etc/apt/sources.list repository indexes.
   sudo apt-get update
-  sudo apt-get -y upgrade
+  # Quietly install updates.
+  sudo apt-get -q=2 upgrade
 
   # Install or upgrade Bash, configuration files, and shell utilities
   source bash/make_bash.sh
@@ -85,6 +87,15 @@ function install() {
 
 # Complete the installation and prepare system for usage.
 function clean_up() {
+  echo "Cleaning repository caches..."
+  # Remove packages that are no longer installed from local cache.
+  # To see cache size: du -sh /var/cache/apt/archives
+  sudo apt-get autoclean
+  # Removes packages installed by other packages and are no longer needed.
+  sudo apt-get autoremove
+  # Remove any configuration files left behind by packages.
+  dpkg --list |grep "^rc" | cut -d " " -f 3 | xargs sudo dpkg --purge
+
   echo "OS settings complete."
   # Confirm a reboot to complete configurations or restart UI.
   printf "\n"
