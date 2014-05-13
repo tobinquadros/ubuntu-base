@@ -12,4 +12,5 @@ sudo apt-get install -y exuberant-ctags
 # Install serial communication tools.
 sudo apt-get install -y minicom
 sudo apt-get install -y setserial
+sudo apt-get install -y tftpd xinetd
 
