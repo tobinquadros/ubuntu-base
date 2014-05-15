@@ -49,7 +49,7 @@ function install() {
   echo "Install running..."
 
   # TODO: See apt_preferences(5) manpage for better usages.
-  # Update /etc/apt/sources.list repository indexes.
+  # Fetch updates for /etc/apt/sources.list package indexes.
   sudo apt-get update
   # Quietly install apt updates.
   sudo apt-get -q=2 upgrade
@@ -97,6 +97,8 @@ function clean_up() {
   sudo apt-get autoremove
   # Remove any configuration files left behind by packages, if they exist.
   dpkg --list |grep "^rc" | cut -d " " -f 3 | xargs -r sudo dpkg --purge
+  # Check that no dependencies are broken.
+  sudo apt-get check
 
   echo "OS settings complete."
   # Confirm a reboot to complete configurations or restart UI.
