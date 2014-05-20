@@ -12,6 +12,11 @@ sudo apt-get install -y bash-doc
 #ln -sf $HOME/dotfiles/bash/.bashrc $HOME/.bashrc
 
 # Install other shell utilities
-sudo apt-get install -y build-essential
 sudo apt-get install -y curl
 sudo apt-get install -y tree
+
+# TODO: Move these to a better place.
+sudo apt-get install -y build-essential
+sudo apt-get install -y grsync
+sudo apt-get install -y gparted
+
