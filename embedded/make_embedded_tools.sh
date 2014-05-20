@@ -9,6 +9,9 @@ sudo apt-get install -y make
 sudo apt-get install -y git
 sudo apt-get install -y exuberant-ctags
 
+# Install strace for system profiling, this belongs somewhere else.
+sudo apt-get install -y strace
+
 # Install serial communication tools.
 sudo apt-get install -y minicom
 sudo apt-get install -y setserial
