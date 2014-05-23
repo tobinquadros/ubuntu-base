@@ -1,6 +1,5 @@
 [user]
 	name = Tobin Quadros
-	email = tobinquadros@gmail.com
 [core]
 	autocrlf = input # MacOSX, Set Windows workstations to 'true'
 	excludesfile = ~/dotfiles/git/.gitignore_global
