@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 # install.sh
 
-# TODO: Clean up the confirm task and logic.
-
 # ==============================================================================
 # FUNCTION DEFINITIONS
 # ==============================================================================
@@ -48,7 +46,7 @@ function get_os_version() {
 function install() {
   echo "Install running..."
 
-  # TODO: See apt_preferences(5) manpage for better usages.
+  # WIP: See apt_preferences(5) manpage for better usages.
   # Fetch updates for /etc/apt/sources.list package indexes.
   sudo apt-get update
   # Quietly install apt updates.
@@ -134,7 +132,7 @@ echo "Hardware platform: $(uname -i)"
 # Get the OS version number, if it's not supported here exit 1
 get_os_version
 
-# Confirm before preceeding, then parse arguments.
+# WIP: Confirm before preceeding, then parse arguments.
 echo ""
 if [ $# -le 0 ]; then
   read -p "This may overwrite existing configuration files, are you sure? (y/n) " -n 1
