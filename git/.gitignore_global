@@ -1,10 +1,9 @@
-# .gitignore_global, set as excludesfile in .gitconfig
+# .gitignore_global, this is set as 'excludesfile' in .gitconfig
 
 # Operating system generated
-#.Trashes
-#*.log
+.Trashes
 
-## Compiled and executable
+## Compiled, should these be ignored in the repo config instead?
 #*.a
 #*.app
 #*.dll
@@ -15,8 +14,8 @@
 #*.out
 #*.so
 #*.so.*
-#
-## Packages
+
+## Packages, should these be ignored in the repo config instead?
 #*.7z
 #*.dmg
 #*.gz
@@ -25,17 +24,6 @@
 #*.tar
 #*.zip
 
-# Databases
-#*.sql
-#*.sqlite
-
-# Node.js
-#node_modules/
-
-# Bower
-#bower_components/
-
-# Editors (Vim)
-#*.swp
-#.netrwhist
-#tags
+# Editors (Vim), don't put your editor crap in repos.
+*.swp
+tags

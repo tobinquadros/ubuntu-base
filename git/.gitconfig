@@ -1,5 +1,5 @@
 [user]
-	name = Tobin Quadros
+	name = Tobin Quadros # Leave user.email blank for work/home
 [core]
 	autocrlf = input # MacOSX, Set Windows workstations to 'true'
 	excludesfile = ~/dotfiles/git/.gitignore_global
