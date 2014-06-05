@@ -62,12 +62,12 @@ function install() {
   source vim/make_vim.sh
 
   # TMUX
-  source tmux/make_tmux.sh
+  # source tmux/make_tmux.sh
 
   # Embedded development environments
   source embedded/make_embedded_tools.sh
-  source embedded/make_avr.sh
-  source embedded/make_ti.sh
+  # source embedded/make_avr.sh
+  # source embedded/make_ti.sh
 
   # Install or upgrade Node.js and configuration files
   #source node/make_nodejs.sh

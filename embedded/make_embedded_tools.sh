@@ -15,9 +15,10 @@ sudo apt-get install -y minicom setserial
 # ==============================================================================
 
 # Client machine needs TFTP client installed.
-# See xinetd manpage to understand setup, /etc/xinetd.conf for configuration.
 sudo apt-get install -y xinetd tftpd tftp
-cat << EOF /etc/xinetd.d/tftp
+
+# WIP: See xinetd manpage to understand setup, /etc/xinetd.conf for configuration.
+sudo sh -c "cat << EOF > /etc/xinetd.d/tftp | sudo -s
 service tftp
 {
   protocol        = udp
@@ -29,20 +30,20 @@ service tftp
   server_args     = /tftpboot
   disable         = no
 }
-EOF
+EOF"
 
 # This needs to match the server_args value.
 sudo mkdir /tftpboot
-sudo chmod -R 777 /tftpboot
-sudo chown -R nobody /tftpboot
-
 # This is just a testfile. Check it from client machine.
-cat << EOF /tftpboot/testfile
+sudo sh -c "cat << EOF > /tftpboot/testfile | sudo -s
 This
 is
 your
 testfile.
-EOF
+EOF"
+# Setup perms for NFS/TFTP (nobody)
+sudo chmod -R 777 /tftpboot
+sudo chown -R nobody /tftpboot
 
 # Restart TFTPD through xinetd
 sudo /etc/init.d/xinetd stop
@@ -62,15 +63,20 @@ sudo /etc/init.d/xinetd start
 # ==============================================================================
 
 # WIP: For more info see https://help.ubuntu.com/lts/serverguide/network-file-system.html
-sudo apt-get install -y nfs-kernel-server
+# What is portmap for?
+sudo apt-get install -y nfs-kernel-server portmap
+
+# Ensure directory is available and set perms for nfs UID/GID
+mkdir -p $HOME/XMC-1
+sudo chmod -R 777 $HOME/XMC-1
+sudo chown -R nobody:nogroup $HOME/XMC-1
 
 # WIP: Configure directories to be exported by adding them to /etc/exports file.
-cat << EOF > /etc/exports
-# Replace * with one of the hostname formats.
-# Make the hostname declaration as specific as possible so unwanted systems cannot access the NFS mount.
-/ubuntu  *(ro,sync,no_root_squash)
-/home    *(rw,sync,no_root_squash)
-EOF
+# Create exports file
+sudo sh -c "cat << EOF > /etc/exports | sudo -s
+/home/pserver/XMC-1   *(rw,sync,no_root_squash,no_all_squash,no_subtree_check)
+EOF"
+sudo exportfs -a
 
 # Start NFS
 sudo service nfs-kernel-server start
@@ -79,7 +85,6 @@ sudo service nfs-kernel-server start
 # Samba- specific for Windows cross-toolchain development
 # ==============================================================================
 
-# 
 sudo apt-get install -y samba samba-common system-config-samba python-glade2
-# WIP: start the smbd service, restart nmbd.
+# TODO: start the smbd service, restart nmbd.
 

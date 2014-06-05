@@ -228,18 +228,6 @@ if !exists(":DiffOrig")
 endif
 nnoremap <Leader>do :DiffOrig<CR>
 
-" Search todo's and place in quickfix list (\td)
-function! GrepTodo()
-  if exists("%")
-    :vimgrep /todo/j  % **
-  else
-    :vimgrep /todo/j  **
-  endif
-  " Open the quickfix list
-  :cwindow
-endfunction
-nnoremap <Leader>td :call GrepTodo()<CR>
-
 " Strip trailing whitespace from lines (\ws)
 function! StripWhitespace()
     let save_cursor = getpos(".")
