@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 # make_embedded_tools.sh
 
-# Install kernel build dependencies if not already installed.
+# Install kernel build tools.
 sudo apt-get install -y libncurses5-dev gcc gcc-doc make git exuberant-ctags
 
-# Install strace for system profiling, this belong somewhere else?
+# Install profiling tools.
 sudo apt-get install -y strace
 
 # Install serial communication tools.
-sudo apt-get install -y minicom setserial
+sudo apt-get install -y setserial minicom
 
 # ==============================================================================
 # TFTP Server
@@ -32,16 +32,8 @@ service tftp
 }
 EOF"
 
-# This needs to match the server_args value.
+# Make directory to match "server_args" value, set perms (nobody)
 sudo mkdir /tftpboot
-# This is just a testfile. Check it from client machine.
-sudo sh -c "cat << EOF > /tftpboot/testfile | sudo -s
-This
-is
-your
-testfile.
-EOF"
-# Setup perms for NFS/TFTP (nobody)
 sudo chmod -R 777 /tftpboot
 sudo chown -R nobody /tftpboot
 
@@ -49,6 +41,13 @@ sudo chown -R nobody /tftpboot
 sudo /etc/init.d/xinetd stop
 sudo /etc/init.d/xinetd start
 
+# Create a testfile. (Check it from client machine.)
+sudo sh -c "cat << EOF > /tftpboot/testfile | sudo -s
+This
+is
+your
+testfile.
+EOF"
 # To test TFTPD run these from another machine that can access the tftp server:
 #
 #   $ tftp 192.168.0.122 (or tftpd IP addr)
@@ -85,6 +84,25 @@ sudo service nfs-kernel-server start
 # Samba- specific for Windows cross-toolchain development
 # ==============================================================================
 
+# Install Samba
 sudo apt-get install -y samba samba-common system-config-samba python-glade2
-# TODO: start the smbd service, restart nmbd.
+
+# Start the smbd service
+sudo restart smbd
+sudo restart nmbd
+
+# This needs to go in /etc/samba/smb.conf but it can't overwrite the file.
+# I would like to append it, but don't want to append it every time.
+#
+# [XMC-1]
+#   comment = Production Directories on Ubuntu
+#   path = /home/pserver/XMC-1
+#   valid users = nobody
+#   available = yes
+#   read only = no
+#   writable = yes
+#   guest ok = yes
+#   public = yes
+#   browseable = yes
+#
 
