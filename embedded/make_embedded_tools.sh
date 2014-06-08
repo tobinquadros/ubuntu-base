@@ -18,7 +18,7 @@ sudo apt-get install -y setserial minicom
 sudo apt-get install -y xinetd tftpd tftp
 
 # WIP: See xinetd manpage to understand setup, /etc/xinetd.conf for configuration.
-sudo sh -c "cat << EOF > /etc/xinetd.d/tftp | sudo -s
+sudo sh -c "cat << EOF > /etc/xinetd.d/tftp
 service tftp
 {
   protocol        = udp
@@ -42,7 +42,7 @@ sudo /etc/init.d/xinetd stop
 sudo /etc/init.d/xinetd start
 
 # Create a testfile. (Check it from client machine.)
-sudo sh -c "cat << EOF > /tftpboot/testfile | sudo -s
+sudo sh -c "cat << EOF > /tftpboot/testfile
 This
 is
 your
@@ -72,7 +72,7 @@ sudo chown -R nobody:nogroup $HOME/XMC-1
 
 # WIP: Configure directories to be exported by adding them to /etc/exports file.
 # Create exports file
-sudo sh -c "cat << EOF > /etc/exports | sudo -s
+sudo sh -c "cat << EOF > /etc/exports
 /home/pserver/XMC-1   *(rw,sync,no_root_squash,no_all_squash,no_subtree_check)
 EOF"
 sudo exportfs -a
