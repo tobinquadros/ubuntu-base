@@ -12,6 +12,7 @@ sudo apt-get install -y setserial minicom
 
 # ==============================================================================
 # TFTP Server
+# WIP: Can this be done with dnsmasq?
 # ==============================================================================
 
 # Client machine needs TFTP client installed.

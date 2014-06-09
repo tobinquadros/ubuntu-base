@@ -108,6 +108,9 @@ function install() {
   if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "install started..."
 
+    # CFEngine3
+    source cfengine/make_cfengine.sh
+
     # Bash, and core utilities.
     # source bash/make_bash.sh
 

@@ -21,11 +21,14 @@
 [alias]
 	co = checkout
 	br = branch -av
+	bug = grep -in bug
 	cm = commit -m
 	dh = diff HEAD
+	dhh = diff HEAD^..
 	l = log --pretty=oneline --abbrev-commit --graph --decorate
-	lr = log --raw
 	st = status --short --column
+	todo = grep -in todo
+	wip = grep -in wip
 [receive]
 	fsckObjects = true # Check consistency of objects before push
 [grep]
