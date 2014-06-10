@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
-# Install and configure VMware Player for Ubuntu.
+# make_vmplayer.sh
 
-# This is not in the right place!!!
-# Script installs wrapper for executable to /usr/bin/vmplayer.
-source VMware-Player-6.0.2-1744117.x86_64.bundle
+# Script installs wrapper for executable to /usr/bin/vmplayer, then installs.
+# This is assuming you download bundle to ~/Downloads/ directory.
+sudo apt-get install -y build-essential linux-headers-$(uname -r)
+cd ~/Downloads
+sudo chmod +x VMware-Player*
+sudo ./VMware-Player*
+cd -
 
+# To uninstall:
+# sudo vmware-installer -u vmware-player
