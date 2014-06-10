@@ -108,6 +108,9 @@ function install() {
   if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "install started..."
 
+    # Network
+    # source network/make_interfaces.sh
+
     # CFEngine3
     source cfengine/make_cfengine.sh
 

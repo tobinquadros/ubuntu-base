@@ -19,7 +19,8 @@ deb http://cfengine.com/pub/apt/packages stable main
 EOF"
 
 # Update the new sources.list, is this needed?
-sudo apt-get -q=1 update
+echo "sudo apt-get update called, waiting for updates to download..."
+sudo apt-get -q=2 update
 
 # Install the package.
 sudo apt-get install -y cfengine-community
@@ -28,10 +29,9 @@ sudo apt-get install -y cfengine-community
 # to their final working location in /var/cfengine/inputs/ and starting the base
 # cf-execd daemon. This process controls the periodic execution of cf-agent, which
 # is the one that actually executes the promises in the provided policies.
-#
-# Bootstrap CFEngine, the commercial edition may take a few minutes.
 # To check if policy server is running: /var/cfengine/bin/cf-agent --version or use ps ax | grep cf
 #
+# Bootstrap CFEngine, the commercial edition may take a few minutes.
 # Make sure to use the correct policy server IP for the --bootstrap option.
 # Assume it's 192.168.0.22
-# sudo /var/cfengine/bin/cf-agent --bootstrap <server-ip>
+sudo /var/cfengine/bin/cf-agent --bootstrap 192.168.0.22

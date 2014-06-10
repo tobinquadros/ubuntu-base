@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # make_embedded_tools.sh
 
+# TODO: Get all the excess out of this file. Break it out to multi files.
+
 # Install kernel build tools.
 sudo apt-get install -y libncurses5-dev gcc gcc-doc make git exuberant-ctags
 
@@ -18,7 +20,7 @@ sudo apt-get install -y setserial minicom
 # Client machine needs TFTP client installed.
 sudo apt-get install -y xinetd tftpd tftp
 
-# WIP: See xinetd manpage to understand setup, /etc/xinetd.conf for configuration.
+# TODO: See xinetd manpage to understand setup, /etc/xinetd.conf for configuration.
 sudo sh -c "cat << EOF > /etc/xinetd.d/tftp
 service tftp
 {
@@ -62,19 +64,26 @@ EOF"
 # NFS
 # ==============================================================================
 
-# WIP: For more info see https://help.ubuntu.com/lts/serverguide/network-file-system.html
-# What is portmap for?
-sudo apt-get install -y nfs-kernel-server portmap
+# Install NFS server.
+sudo apt-get install -y nfs-kernel-server
 
-# Ensure directory is available and set perms for nfs UID/GID
-mkdir -p $HOME/XMC-1
-sudo chmod -R 777 $HOME/XMC-1
-sudo chown -R nobody:nogroup $HOME/XMC-1
+# Question: Is NFS needed for Production?
+# Create Production directory if it doesn't already exist.
+# Ensure directory is available and set permissions for NFS with UID/GID.
+mkdir -p $HOME/Production
+sudo chmod -R 777 $HOME/Production
+sudo chown -R nobody:nogroup $HOME/Production
+# Create Development directory if it doesn't already exist.
+# Ensure directory is available and set permissions for NFS with UID/GID.
+mkdir -p $HOME/Development
+sudo chmod -R 777 $HOME/Development
+sudo chown -R nobody:nogroup $HOME/Development
 
-# WIP: Configure directories to be exported by adding them to /etc/exports file.
-# Create exports file
+# Configure directories to be exported by adding them to /etc/exports file.
+# For details see: man exports
 sudo sh -c "cat << EOF > /etc/exports
-/home/pserver/XMC-1   *(rw,sync,no_root_squash,no_all_squash,no_subtree_check)
+/home/pserver/Production   *(ro,no_root_squash,no_all_squash,no_subtree_check)
+/home/pserver/Development   *(rw,sync,no_root_squash,no_all_squash,no_subtree_check)
 EOF"
 sudo exportfs -a
 
@@ -82,7 +91,7 @@ sudo exportfs -a
 sudo service nfs-kernel-server start
 
 # ==============================================================================
-# Samba- specific for Windows cross-toolchain development
+# Samba- for Windows cross environment
 # ==============================================================================
 
 # Install Samba
@@ -94,10 +103,22 @@ sudo restart nmbd
 
 # This needs to go in /etc/samba/smb.conf but it can't overwrite the file.
 # I would like to append it, but don't want to append it every time.
+# Question: Is CFEngine3 right for this?
 #
-# [XMC-1]
+# [Production]
 #   comment = Production Directories on Ubuntu
-#   path = /home/pserver/XMC-1
+#   path = /home/pserver/Production
+#   valid users = nobody
+#   available = yes
+#   read only = yes
+#   writable = no
+#   guest ok = yes
+#   public = yes
+#   browseable = yes
+#
+# [Development]
+#   comment = Development Directories on Ubuntu
+#   path = /home/pserver/Development
 #   valid users = nobody
 #   available = yes
 #   read only = no
