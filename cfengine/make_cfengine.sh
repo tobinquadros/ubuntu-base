@@ -33,5 +33,5 @@ sudo apt-get install -y cfengine-community
 #
 # Bootstrap CFEngine, the commercial edition may take a few minutes.
 # Make sure to use the correct policy server IP for the --bootstrap option.
-# Assume it's 192.168.0.22
-sudo /var/cfengine/bin/cf-agent --bootstrap 192.168.0.22
+# Assume it's 192.168.0.1
+sudo /var/cfengine/bin/cf-agent --bootstrap 192.168.0.1

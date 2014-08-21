@@ -53,7 +53,7 @@ testfile.
 EOF"
 # To test TFTPD run these from another machine that can access the tftp server:
 #
-#   $ tftp 192.168.0.122 (or tftpd IP addr)
+#   $ tftp 192.168.0.254 (or tftpd IP addr)
 #   tftp> get testfile
 #   Sent 159 bytes in 0.0 seconds (returned from server)
 #   tftp> quit
@@ -82,8 +82,8 @@ sudo chown -R nobody:nogroup $HOME/Development
 # Configure directories to be exported by adding them to /etc/exports file.
 # For details see: man exports
 sudo sh -c "cat << EOF > /etc/exports
-/home/pserver/Production   *(ro,no_root_squash,no_all_squash,no_subtree_check)
-/home/pserver/Development   *(rw,sync,no_root_squash,no_all_squash,no_subtree_check)
+/home/tobin/Production   *(ro,no_root_squash,no_all_squash,no_subtree_check)
+/home/tobin/Development   *(rw,sync,no_root_squash,no_all_squash,no_subtree_check)
 EOF"
 sudo exportfs -a
 
@@ -107,7 +107,7 @@ sudo restart nmbd
 #
 # [Production]
 #   comment = Production Directories on Ubuntu
-#   path = /home/pserver/Production
+#   path = /home/tobin/Production
 #   valid users = nobody
 #   available = yes
 #   read only = yes
@@ -118,7 +118,7 @@ sudo restart nmbd
 #
 # [Development]
 #   comment = Development Directories on Ubuntu
-#   path = /home/pserver/Development
+#   path = /home/tobin/Development
 #   valid users = nobody
 #   available = yes
 #   read only = no
