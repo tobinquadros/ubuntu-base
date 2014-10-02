@@ -1,7 +1,6 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 # make_installer.sh
-
-# TODO: Get Ubuntu specific instructions for making installer, not OSX.
+# Creates an Ubuntu USB drive installer from OS X.
 
 # Convert file
 ls -la

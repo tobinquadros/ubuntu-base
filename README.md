@@ -1,38 +1,25 @@
-# Overview
+# Ubuntu Bootstrap Scripts
 
-**Note:** This repository is still in development.
+Simple bootstrapping of Ubuntu environment for test purposes.
 
-## OS environment setup & package updates for:
-*__In installation order:__*
+## Quick OS setup & package updates for:
 
-+ Bash _(w/ other basic shell utilities)_
-
-+ Git _(Change username & email if you clone this.)_
-
-+ Vim _(w/ pathogen.vim & updated plugin installs)_
-
++ Git
 + TMUX
++ Vim
 
-+ Embedded Linux dev environment
+## To install:
 
-+ Python3 _(w/ SciPy.org stack, Octave, & oct2py)_
+``` sh
+curl -O https://raw.githubusercontent.com/tobinquadros/Ubuntu/master/bootstrap.sh
 
-+ Node.js _(w/ grunt, express, jshint, & others)_
+chmod +x bootstrap.sh
 
-+ MongoDB, PostgreSQL, Redis, & SQLite databases
+./bootstrap.sh
+```
 
-+ Google Chrome & Firefox applications (only if not already installed)
+###### OR
 
-+ Ubuntu system defaults configuration
-
-## Install:
-
-``` bash
-cd ~
-
-git clone https://github.com/tobinquadros/Ubuntu.git dotfiles
-
-cd ~/dotfiles
-
-./install.sh
+``` sh
+./bootstrap.sh --help
 ```
