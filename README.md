@@ -2,11 +2,9 @@
 
 Simple bootstrapping of Ubuntu environment for test purposes.
 
-## Quick OS setup & package updates for:
+## Custom configuration and package updates:
 
-+ Git
-+ TMUX
-+ Vim
+_(Work In Progress)_
 
 ## To install:
 
@@ -16,10 +14,4 @@ curl -O https://raw.githubusercontent.com/tobinquadros/Ubuntu/master/bootstrap.s
 chmod +x bootstrap.sh
 
 ./bootstrap.sh
-```
-
-###### OR
-
-``` sh
-./bootstrap.sh --help
 ```
