@@ -8,6 +8,8 @@ _(Work In Progress)_
 
 ## To install:
 
+Inline
+
 ```sh
 curl https://raw.githubusercontent.com/tobinquadros/Ubuntu/master/bootstrap.sh | sudo bash
 ```
