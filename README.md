@@ -1,25 +1,5 @@
-# Ubuntu Bootstrap Scripts
+# Ubuntu-base
 
-Simple bootstrapping of Ubuntu environment for test purposes.
+Bootstrap Ubuntu environment with preseeding, packer, and vagrant.
 
-## Custom configuration and package updates:
-
-_(Work In Progress)_
-
-## To install:
-
-Inline
-
-```sh
-curl https://raw.githubusercontent.com/tobinquadros/Ubuntu/master/bootstrap.sh | sudo bash
-```
-
-OR, if you'd like to store the file on the machine:
-
-``` sh
-curl -O https://raw.githubusercontent.com/tobinquadros/Ubuntu/master/bootstrap.sh
-
-chmod +x bootstrap.sh
-
-./bootstrap.sh
-```
+__(more to come...)__, also see my CentOS-base.
