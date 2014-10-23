@@ -1,0 +1,40 @@
+{
+    "variables": {
+        "ssh_name": "vagrant",
+        "ssh_pass": "vagrant",
+        "hostname": "packer-test"
+    },
+
+    "builders": [{
+        "type": "virtualbox-iso",
+        "vboxmanage": [
+            ["modifyvm", "{{.Name}}", "--memory", "2048"],
+            ["modifyvm", "{{.Name}}", "--cpus", "2"]
+        ],
+        "guest_os_type": "Ubuntu_64",
+        "iso_url": "iso/ubuntu-14.04.1-desktop-amd64.iso",
+        "iso_checksum": "119cb63b48c9a18f31f417f09655efbd",
+        "iso_checksum_type": "md5",
+        "disk_size" : 8192,
+        "hard_drive_interface": "sata",
+        "http_directory" : "preseeds",
+        "http_port_min" : 8000,
+        "http_port_max" : 9000,
+        "headless": "false",
+        "ssh_username": "{{user `ssh_name`}}",
+        "ssh_password": "{{user `ssh_pass`}}",
+        "ssh_wait_timeout": "20m",
+        "shutdown_command": "echo {{user `ssh_pass`}} | sudo -S shutdown -P now",
+        "boot_command" : [
+            "<esc><esc><enter><wait>",
+            "/install/vmlinuz noapic ",
+            "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ubuntu-desktop-preseed.seed ",
+            "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
+            "hostname={{user `hostname`}} ",
+            "fb=false debconf/frontend=noninteractive ",
+            "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
+            "keyboard-configuration/variant=USA console-setup/ask_detect=false ",
+            "initrd=/install/initrd.gz -- <enter>"
+        ]
+    }]
+}
