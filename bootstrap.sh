@@ -132,10 +132,10 @@ verify
 upgrade
 
 # Run the install function.
-# install
+install
 
 # Clean up caches and old config files left around, manage the packagelist.
-# clean_up
+clean_up
 
 # Prep filesystem for better compression on VM.
-# compact
+compact

@@ -9,12 +9,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   ###
   # VARIABLES
   ###
-  $base_box = "ubuntu/trusty64"
-  # $base_box = "Ubuntu-14.04-Desktop-x64"
-  $vb_gui = false
+  # $base_box = "ubuntu/trusty64"
+  $base_box = "Ubuntu-14.04-Desktop-x64"
+  $vb_gui = True
 
   config.vm.box = $base_box
-  config.vm.synced_folder "/Volumes/Workdrive/Installers/", "/Installers/"
   config.vm.provider :virtualbox do |vb|
     vb.gui = $vb_gui
     vb.customize ["modifyvm", :id, "--memory", "2048"]

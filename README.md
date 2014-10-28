@@ -1,5 +1,26 @@
 # Ubuntu-base
 
-Bootstrap Ubuntu environment with preseeding, packer, and vagrant.
+## Bootstrap with Debian preseeds & Packer templates
 
-__(more to come...)__, also see my CentOS-base.
+### Builders:
+
+__(more to come)__
+
+- Virtualbox
+
+### Provisioners:
+
+- Shell
+- Salt
+
+### Post-Processors:
+
+__(more to come)__
+
+- Vagrant.
+
+## Create Ubuntu USB Drive
+
+```sh
+./make_installer.sh
+```

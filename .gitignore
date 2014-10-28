@@ -1,4 +1,3 @@
 .vagrant
 package.box
-images/
 packer_cache
