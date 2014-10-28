@@ -1,7 +1,7 @@
 {
     "variables": {
-        "ssh_name": "vagrant",
-        "ssh_pass": "vagrant",
+        "ssh_name": "ubuntu",
+        "ssh_pass": "ubuntu",
         "hostname": "packer-test"
     },
 
@@ -12,23 +12,23 @@
             ["modifyvm", "{{.Name}}", "--cpus", "2"]
         ],
         "guest_os_type": "Ubuntu_64",
-        "iso_url": "iso/ubuntu-14.04.1-server-amd64.iso",
+        "iso_url": "http://releases.ubuntu.com/14.04.1/ubuntu-14.04.1-server-amd64.iso",
         "iso_checksum": "ca2531b8cd79ea5b778ede3a524779b9",
         "iso_checksum_type": "md5",
-        "disk_size" : 8192,
+        "disk_size" : 8000,
         "hard_drive_interface": "sata",
         "http_directory" : "preseeds",
-        "http_port_min" : 8000,
-        "http_port_max" : 9000,
+        "http_port_min" : 9001,
+        "http_port_max" : 9001,
         "headless": "false",
         "ssh_username": "{{user `ssh_name`}}",
         "ssh_password": "{{user `ssh_pass`}}",
-        "ssh_wait_timeout": "20m",
+        "ssh_wait_timeout": "60m",
         "shutdown_command": "echo {{user `ssh_pass`}} | sudo -S shutdown -P now",
         "boot_command" : [
             "<esc><esc><enter><wait>",
             "/install/vmlinuz noapic ",
-            "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ubuntu-server-preseed.seed ",
+            "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ubuntu-server-preseed.cfg ",
             "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
             "hostname={{user `hostname`}} ",
             "fb=false debconf/frontend=noninteractive ",
