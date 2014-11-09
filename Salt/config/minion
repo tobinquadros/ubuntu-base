@@ -1,0 +1,6 @@
+# /etc/salt/minion
+
+master: localhost
+id: master-minion
+file_client: local
+
