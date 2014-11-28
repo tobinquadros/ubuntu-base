@@ -1,0 +1,8 @@
+{
+  "environment": "dev",
+  "headless": "false",
+  "hostname": "ubuntu-dev",
+  "iso_checksum": "ca2531b8cd79ea5b778ede3a524779b9",
+  "iso_checksum_type": "md5",
+  "iso_url": "http://releases.ubuntu.com/14.04.1/ubuntu-14.04.1-server-amd64.iso"
+}
