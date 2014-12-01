@@ -1,0 +1,11 @@
+#!/usr/bin/expect -f
+#
+# Test server with the expect command
+
+spawn ssh -p 22 vagrant@192.168.100.100
+expect "password: "
+send "vagrant\r"
+expect "$ "
+send "pgrep -l salt\r"
+expect "$ "
+send "exit\r"

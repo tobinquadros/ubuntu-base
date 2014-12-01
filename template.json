@@ -1,23 +1,28 @@
 {
   "variables": {
-    "edition": "server",
+    "do-api-token": "DIGITALOCEAN_API_TOKEN",
     "headless": "false",
     "hostname": "ubuntu",
     "iso_checksum": "ca2531b8cd79ea5b778ede3a524779b9",
     "iso_checksum_type": "md5",
     "iso_url": "http://releases.ubuntu.com/14.04.1/ubuntu-14.04.1-server-amd64.iso",
-    "ssh_name": "vagrant",
-    "ssh_pass": "vagrant"
+    "salt-bootstrap-options": "-D -M",
+    "ssh_username": "root",
+    "sudo_password": ""
   },
 
   "provisioners": [
     {
       "type": "shell",
-      "execute_command": "echo 'vagrant' | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
+      "script": "bootstrap.sh",
+      "execute_command": "echo {{ user `sudo_password` }} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
       "environment_vars": [
-        "EDITION={{ user `edition` }}"
-      ],
-      "script": "bootstrap.sh"
+        "COMPACT=true",
+        "DISABLE_ROOT=true",
+        "INSTALL_SALT=true",
+        "SALT_BOOTSTRAP_OPTIONS={{ user `salt-bootstrap-options` }}",
+        "SETUP_VAGRANT=false"
+      ]
     }
   ],
 
@@ -31,32 +36,37 @@
   "builders": [
     {
       "type": "virtualbox-iso",
+      "headless": "{{ user `headless` }}",
       "guest_os_type": "Ubuntu_64",
       "iso_url": "{{ user `iso_url` }}",
       "iso_checksum": "{{ user `iso_checksum` }}",
       "iso_checksum_type": "{{ user `iso_checksum_type` }}",
-      "disk_size" : 8000,
+      "http_directory" : "preseeds",
+      "http_port_min" : 8000,
+      "http_port_max" : 8000,
       "hard_drive_interface": "sata",
       "iso_interface": "sata",
-      "http_directory" : "preseeds",
-      "http_port_min" : 9000,
-      "http_port_max" : 9001,
-      "headless": "{{ user `headless` }}",
-      "ssh_username": "{{user `ssh_name`}}",
-      "ssh_password": "{{user `ssh_pass`}}",
+      "disk_size" : 8000,
+      "ssh_username": "{{ user `ssh_username` }}",
+      "ssh_key_path": "{{ pwd }}/preseeds/id_rsa",
       "ssh_wait_timeout": "30m",
-      "shutdown_command": "echo {{ user `ssh_pass` }} | sudo -S shutdown -P now",
+      "shutdown_command": "echo {{ user `sudo_password` }} | sudo -S shutdown -P now",
       "boot_command" : [
         "<esc><esc><enter><wait>",
         "/install/vmlinuz noapic ",
-        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ubuntu-server-preseed.cfg ",
-        "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
+        "auto=true ",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+        "vga=normal fb=false ",
         "hostname={{ user `hostname` }} ",
-        "fb=false debconf/frontend=noninteractive ",
-        "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
-        "keyboard-configuration/variant=USA console-setup/ask_detect=false ",
         "initrd=/install/initrd.gz -- <enter>"
       ]
+    },
+    {
+      "type": "digitalocean",
+      "api_token": "{{ user `do-api-token` }}",
+      "size": "512mb",
+      "region": "nyc3",
+      "image": "ubuntu-14-04-x64"
     }
   ]
 }

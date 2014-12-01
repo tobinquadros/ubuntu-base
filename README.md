@@ -1,75 +1,77 @@
 # Ubuntu-base
 
-## Preseed
+## Preseeding
 
-Automated preseed configurations can be found in the preseeds/ directory. These have been tested against Ubuntu 14.04.
-
-The default user will be "Vagrant User", username= vagrant, password= vagrant.
-
-## Bootstrap / Provision
-
-After the automated _(or manual)_ install is complete the system has a custom Ubuntu base to bootstrap from for specific usage. The default is to setup a Vagrant Virtualbox with Salt as the provisioner. To customize this provisioning before the Packer build you have some options _(not required or exhaustive)_:
-
-+ Place additions/changes in bootstrap.sh _(be cautious of function sequence)_. You must pass any arguments to the script as environment variables to packer!!! More on that later.
-```sh
-./bootstrap --help # For more info, some options are required
-```
-
-+ Upload or clone your custom Salt state-tree and pillars onto the machine after the build. This functionality could be put in bootstrap.sh, or you can perform it separately. NOTE: currently this build does not preseed salt-keys, to bypass intial salt-key configuration call the highstate like a masterless node:
-```sh
-sudo salt-call --local state.highstate
-```
+The [packer-preseed.cfg](preseeds/packer-preseed.cfg) configuration file is fully automated and ready for use with Packer. It attempts to be as minimal as possible while allowing other Packer provisioning methods to further build the system.
 
 ## Packer
 
-+ To find available Packer build options. _(or just look in template.json)_
++ To find available Packer build options. _(or view the [template.json](template.json) file itself)_
 ```sh
 packer inspect template.json
 ```
 
-+ To run the default builder. _(default is virtualbox w/ vagrant)_
++ To run all builders. _(default installs Salt on all builders, and preps Vagrant for Virtualbox)_
 ```sh
 packer build template.json
 ```
 
-+ To run only a specific builder use the -only option _(use 'inspect' to see builder options)_
++ To run a builder that changes the default salt-bootstrap arguments you can overwrite the `salt-bootstrap-args` variable. If no `salt-bootstrap-args` variable is passed the default WILL install a salt-master and salt-minion and uses the debug flag `-D -M` _(see the [salt-bootstrap.sh](https://github.com/saltstack/salt-bootstrap) source for all options)_.
+###### This option skips a salt install completely
 ```sh
-packer build -only=docker template.json
+packer build -var "salt-bootstrap-args=-N" template.json
+```
+
++ To run ONLY a specific builder use the -only option _(run `packer inspect template.json` to see which builders are available in [template.json](template.json))_
+```sh
+packer build -only="virtualbox-iso" template.json
+```
+
++ To run a build with preset Packer user variables, pass in a .json variable file _(or multiple)_. Premade variable files are stored in the [environments](environments) directory. For instance, to build Ubuntu Desktop instead of the default Ubuntu Server 14.04, pass the [environments/desktop.json](environments/desktop.json) variable file at the command line. You can also create a new variable files and save a custom build. _(run `packer inspect template.json` to see all variables that are exposed in [template.json](template.json))_
+```sh
+packer build -var-file="environments/desktop.json" template.json
 ```
 
 ## Vagrant Box
 
-+ By default no salt states will be uploaded during the packer build, the ssh configs to improve the speed of Vagrant connections will available in the salt shared folder, uncomment in the Vagrantfile to enable them.
+For the "virtualbox-iso" builder, the default user will be `Vagrant User`, username= `vagrant`, password= `vagrant`. This build is immediately ready for use by running `vagrant up`, then `vagrant ssh` as long as you remain in the project directory. The [Vagrantfile](Vagrantfile) is configured to automatically spin up the last build that was created, which will be named "packer_virtualbox-iso_virtualbox.box". See `config.vm.box` in the [Vagrantfile](Vagrantfile) to learn more.
+
++ To add the box from the Packer build as a local Vagrant box.
 ```sh
-# Uncomment to sync the salt-tree folders.
-# config.vm.synced_folder "salt/state_tree/", "/srv/salt/", create: true
-# config.vm.synced_folder "salt/pillar_roots/", "/srv/pillar/", create: true
+vagrant box add my_ubuntu packer_virtualbox-iso_virtualbox.box
 ```
 
-+ You will have a very minimal state tree available on the VM at /srv/salt, /srv/pillar.
-```sh
-# salt/ or /srv/
-├── pillar_roots
-    └── top.sls
-└── state_tree
-    ├── ssh
-    │   ├── init.sls
-    │   ├── ssh_config
-    │   └── sshd_config
-    └── top.sls
-```
-
-+ The Vagrantfile is configured to automatically spin up the last build that was created. See config.vm.box* in the Vagrantfile to learn more.
-
-+ To create a Vagrant box from the Packer build artifact _(aka: iso, .box)_
-```sh
-vagrant box add vagrant_name packer_artifact.box
-```
-###### Example that will replace a previous box:
++ Use `--force` to replace a previous box:
 ```sh
 vagrant box add --force my_ubuntu packer_virtualbox-iso_virtualbox.box
 ```
-_(You can search the current working directory to verify the name of the .box artifact)_
+_(After a build, you will find the "packer_virtualbox-iso_virtualbox.box" build artifact in the current working directory)_
+
+## Provisioning
+
+When the installer is finished the base system is ready to provision for more specific usage. To customize this provisioning you have some options _(this not required or exhaustive)_:
+
++ Place additions in [bootstrap.sh](bootstrap.sh) to be run during the Packer build _(not a good idea, this file may be updated and is quirky)_. Also, it seems you must pass arguments to shell scripts as environment variables when using Packer!!! _(More on that later, believe me, just use another method)_.
+###### Even without Packer, you can prep any Ubuntu box for Vagrant and Salt
+```sh
+./bootstrap.sh --help # For more info, some options are required
+```
+
++ By default, salt-states are currently NOT uploaded during the Packer build _(this will change once a flexible method is established)_. You can still make salt-states immediately available for testing in Virtualbox with the [Vagrantfile's](Vagrantfile) `config.vm.synced_folders` method. Uncomment this line in the [Vagrantfile](Vagrantfile) to sync your host machine's entire salt-tree to the VM _(directories may vary)_.
+```sh
+# Uncomment to share the host machine's salt-tree (read-only).
+config.vm.synced_folder "/srv/", "/srv/", create: true, :mount_options => ["ro"]
+```
+
++ Upload, clone, or configure the master's "gitfs\_remotes" option _(a future release will improve on this)_.
+######NOTE: currently this build does not preseed salt-keys, to bypass intial salt-key configuration call the highstate like a masterless node:
+```sh
+sudo salt-call --local state.highstate
+```
+###### OR: with master and minion daemons running
+```sh
+sudo salt-key -A  # Accepts all keys (insecure, OK for testing)
+```
 
 ## USB Drive
 
