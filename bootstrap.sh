@@ -7,7 +7,9 @@
 COMPACT=${COMPACT:-"false"}
 DISABLE_ROOT=${DISABLE_ROOT:-"false"}
 INSTALL_SALT=${INSTALL_SALT:-"false"}
+SETUP_GRUB=${SETUP_GRUB:-"false"}
 SETUP_VAGRANT=${SETUP_VAGRANT:-"false"}
+UPGRADE=${UPGRADE:-"false"}
 
 # ==============================================================================
 # FUNCTION DEFINITIONS
@@ -23,7 +25,7 @@ clean_up() {
   # Removes packages installed by other packages and are no longer needed.
   sudo apt-get autoremove
   # Remove any configuration files left behind by packages, if they exist.
-  dpkg --list |grep "^rc" | cut -d " " -f 3 | xargs -r sudo dpkg --purge
+  dpkg --list | grep "^rc" | cut -d " " -f 3 | xargs -r sudo dpkg --purge
   # Check that no dependencies are broken.
   sudo apt-get check
 }
@@ -44,8 +46,10 @@ disable_root() {
   if [ "$DISABLE_ROOT" = "true" ]; then
     # Remove the root account SSH key.
     sudo rm -rf /root/.ssh/
-    # Expire the root account. (deactivate)
+    # Expire the root account password.
     sudo passwd -dl root
+    # Disable the actual root account
+    # usermod --expiredate 1 root
   else
     echo "ALERT: root account left active!!!"
   fi
@@ -69,11 +73,10 @@ install_salt() {
   fi
 }
 
-# Parse arguments in $@
+# Parse arguments in $@.
 parse_options() {
-  while :
-  do
-    case $1 in
+  for arg in "$@"; do
+    case $arg in
       -h | --help)
         show_usage
         exit 0
@@ -90,12 +93,23 @@ parse_options() {
         INSTALL_SALT="true"
         shift
         ;;
+      --salt-bootstrap-args=*)
+        SALT_BOOTSTRAP_OPTIONS="${arg#*=}"
+        ;;
+      --setup-grub)
+        SETUP_GRUB="true"
+        shift
+        ;;
       --setup-vagrant)
         SETUP_VAGRANT="true"
         shift
         ;;
+      --upgrade)
+        UPGRADE="true"
+        shift
+        ;;
       ?*) # Invalid option.
-        printf >&2 'WARNING: Unknown option: %s\n' "$1"
+        echo "WARNING: Unknown option: $arg"
         show_usage
         exit 1
         ;;
@@ -104,6 +118,18 @@ parse_options() {
         ;;
     esac
   done
+}
+
+# Speed up the grub bootloading process, also more verbose
+setup_grub() {
+  echo "setup_grub() function called"
+  if [ "$SETUP_GRUB" = "true" ]; then
+    sudo sed -i s/GRUB_TIMEOUT\=10/GRUB_TIMEOUT\=0/ /etc/default/grub
+    sudo sed -i s/GRUB_CMDLINE_LINUX_DEFAULT\=\"quiet\"/GRUB_CMDLINE_LINUX_DEFAULT\=\"\"/ /etc/default/grub
+    sudo update-grub
+  else
+    echo "Skipping grub configuration setup."
+  fi
 }
 
 # Ensure the vagrant user is ready for immediate usage by vagrant, then exit.
@@ -118,6 +144,9 @@ setup_vagrant() {
       --create-home \
       --shell /bin/bash \
       vagrant
+    # Minimal user environment
+    sudo cp /etc/skel/.* /home/vagrant/
+    sed -i s/\#force_color_prompt=yes/force_color_prompt=yes/ /home/vagrant.bashrc
     # Give password-less sudo priveledges, ensure privs are good.
     echo "vagrant ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/vagrant
     sudo chown root:root /etc/sudoers.d/vagrant
@@ -142,19 +171,26 @@ setup_vagrant() {
 show_usage() {
   cat <<EOF
 
-Usage: $0 [--options]
+USAGE: $0 [--options]
 
-  Defaults:
-    Compact NOT performed
-    Salt NOT installed
-    Vagrant NOT setup
+OPTIONS:
+  --compact                 Improve disk compression capability.
+  --disable-root            Disable the root account password.
+  --help                    Show this help menu.
+  --install-salt            Install Salt. No custom args.
+  --salt-bootstrap-args=ARG Agruments for salt-bootstrap.sh.
+                            See: https://github.com/saltstack/salt-bootstrap
+  --setup-grub              Setup more verbose Grub2 bootloader configuration.
+  --setup-vagrant           Setup a proper Vagrant User.
+  --upgrade                 Perform dist-upgrade.
 
-Options:
-  --compact           Improve disk compression capability.
-  --disable-root      Expire the root account (de-activate)
-  --help              Show this help menu.
-  --install-salt      Install salt master, minion, & ufw profile.
-  --setup-vagrant     Setup machine for Vagrant User, then exit.
+DEFAULTS:
+  Compact NOT performed
+  Root password NOT disabled
+  Salt NOT installed
+  Grub NOT setup
+  Vagrant NOT setup
+  Upgrade NOT performed
 
 EOF
 }
@@ -162,8 +198,12 @@ EOF
 # Fetch updates from /etc/apt/sources.list package indexes, then upgrade packages.
 upgrade() {
   echo "upgrade() function called"
-  sudo apt-get update
-  sudo apt-get dist-upgrade -y
+  if [ "$UPGRADE" = "true" ]; then
+    sudo apt-get update
+    sudo apt-get dist-upgrade -y
+  else
+    echo "Skipping upgrade."
+  fi
 }
 
 # ==============================================================================
@@ -171,7 +211,7 @@ upgrade() {
 # ==============================================================================
 
 # Get the command line options that were passed.
-parse_options $@
+parse_options "$@"
 
 # Setup the box for a default 'vagrant' user.
 setup_vagrant
@@ -184,6 +224,9 @@ install_salt
 
 # Clean up caches and old config files left around, manage the packagelist.
 clean_up
+
+# Set faster Grub2 configurations
+setup_grub
 
 # Prep filesystem for better compression on VM.
 compact
