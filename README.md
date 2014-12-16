@@ -6,71 +6,85 @@
 ## Preseeding
 
 The [preseed.cfg](preseeds/preseed.cfg) configuration file is fully automated
-and ready for use with Packer. It attempts to be as minimal as possible while
-allowing other Packer provisioning methods to further build the system.
+and ready for use with Packer. It attempts to be quite minimal while allowing
+other Packer provisioning methods to further build the system.
+
+You can also use the [preseed.cfg](preseeds/preseed.cfg) file without Packer.
+I've added a small `serve_preseed.py` script in the
+[preseeds](preseeds) directory that allows you to serve the
+[preseed.cfg](preseeds/preseed.cfg) file up without Packer if desired. It works
+great with virtualbox as the DHCP server, but you have to manually type the installer boot parameters. Please give me comments/feedback if
+you have issues on your system.
 
 ## Packer
 
-To find available Packer build options. _(or you can just view the
-[template.json](template.json) file itself)_
+To find available Packer build options:
 
 ```sh
 packer inspect template.json
 ```
 
-To run all builders. _(default installs Salt on all builders, and preps Vagrant
-for Virtualbox)_
+To run all builders:
 
 ```sh
 packer build template.json
 ```
 
-To run a builder that changes the default salt-bootstrap arguments you can
-overwrite the `salt-bootstrap-args` variable. If no `salt-bootstrap-args`
-variable is passed the default WILL install a salt-master and salt-minion and
-uses the debug flag `-D -M` _(see the
-[salt-bootstrap.sh](https://github.com/saltstack/salt-bootstrap) source for all
-options)_.
-
-###### This option skips a salt install completely
-
-```sh
-packer build -var "salt-bootstrap-args=-N" template.json
-```
-
-To run ONLY a specific builder use the -only option _(run `packer inspect
-template.json` to see which builders are available in
-[template.json](template.json))_
+To run ONLY a specific builder use the -only option:
 
 ```sh
 packer build -only="virtualbox-iso" template.json
 ```
 
-To run a build with preset Packer user variables, pass in a .json variable file
-_(or multiple)_. Premade variable files are stored in the
-[environments](environments) directory. For instance, to build Ubuntu Desktop
-instead of the default Ubuntu Server 14.04, pass the
+#### Override Variables
+
+The shell provisioner `bootstrap.sh` will install the `salt-master` and
+`salt-minion` daemons by default. To run a builder that changes the default
+salt-bootstrap arguments you can override the `salt-bootstrap-args` variable in
+[template.json](template.json). _(see the
+[salt-bootstrap.sh](https://github.com/saltstack/salt-bootstrap) source for all
+options)_.
+
+###### This option skips a salt install
+
+```sh
+packer build -var "salt-bootstrap-args=-N" template.json
+```
+
+To run a build with preset [template.json](template.json) user variables, pass
+in a .json variable file _(or multiple files)_. Premade variable files are
+stored in the [environments](environments) directory. For instance, to build
+Ubuntu Desktop instead of the default Ubuntu Server 14.04, pass the
 [environments/desktop.json](environments/desktop.json) variable file at the
 command line. You can also create a new variable files and save a custom build.
-_(run `packer inspect template.json` to see all variables that are exposed in
-[template.json](template.json))_
 
 ```sh
 packer build -var-file="environments/desktop.json" template.json
 ```
 
+_(run `packer inspect template.json` to see all variables that are exposed in
+[template.json](template.json))_
+
 ## Vagrant Box
 
-For the "virtualbox-iso" builder, the default user will be `Vagrant User`,username= `vagrant`, password= `vagrant`. This build will be immediately ready for use. `vagrant up` will add a local vagrant box named `packer-ubuntu`, unless there is already a `packer-ubuntu` box added. (_See Note_)
+For the "virtualbox-iso" builder, the default user will be `Vagrant
+User`,username= `vagrant`, password= `vagrant`. This build will be immediately
+ready for use. `vagrant up` will add a local vagrant box named `packer-ubuntu`,
+unless there is already a `packer-ubuntu` box added. (_See Note_)
 
-**Note:** If you've already added a box named `packer-ubuntu`, the previously added box will be started which will not be the most recent build. To prevent confusion, after a build is complete I run.
+**Note:** If you've already added a box named `packer-ubuntu`, the previously
+added box will be started which will not be the most recent build. To prevent
+confusion, after a build is complete I run.
+
 ```bash
 vagrant box remove packer-ubuntu
 vagrant up
-vagrant ssh  # optional, sometimes the VB GUI is better
+vagrant ssh  # optional, sometimes the VB GUI is needed
 ```
 
-If the vagrant box works as you expected, you may want to add the new box to Vagrant under a different name. Maybe something that will be used on multiple systems.
+If the vagrant box works as you expected, you may want to add the new box to
+Vagrant under a different name. Maybe something that will be used on multiple
+systems.
 
 ```sh
 vagrant box add my_ubuntu packer_virtualbox-iso_virtualbox.box
@@ -82,8 +96,8 @@ Use `--force` to replace a previous box:
 vagrant box add --force my_ubuntu packer_virtualbox-iso_virtualbox.box
 ```
 
-_(After a build, you will find the "packer_virtualbox-iso_virtualbox.box" build
-artifact in the current working directory)_
+After a build, you will find the `packer_virtualbox-iso_virtualbox.box` build
+artifact in the current working directory.
 
 ## Provisioning
 
@@ -117,7 +131,9 @@ config.vm.synced_folder "/srv/", "/srv/", create: true, :mount_options => ["ro"]
 + Upload, clone, or configure the master's "gitfs\_remotes" option _(a future
   release will improve on this)_.
 
-###### NOTE: currently this build does not preseed salt-keys, to bypass intial salt-key configuration call the highstate like a masterless node:
+###### Currently builds will not preseed salt-keys
+
+To bypass intial salt-key configuration call the highstate like a masterless node:
 
 ```sh
 sudo salt-call --local state.highstate
@@ -131,7 +147,7 @@ sudo salt-key -A  # Accepts all keys (insecure, OK for testing)
 
 ## USB Drive
 
-To create a USB Drive from an Ubuntu .iso _(Mac OS X only)_
+To create a USB Drive from an Ubuntu .iso. _(Works on Mac OS X only)_
 
 ```sh
 ./make_usb.sh
@@ -139,7 +155,7 @@ To create a USB Drive from an Ubuntu .iso _(Mac OS X only)_
 
 Follow the prompts, you will need to have an Ubuntu iso image to use. A future
 version may be capable of creating usb drives from a packer build. You can find
-Ubuntu .iso downloads here: http://www.ubuntu.com/download
+Ubuntu .iso downloads [here](http://www.ubuntu.com/download).
 
 ## Contributing
 
