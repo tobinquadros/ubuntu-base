@@ -10,11 +10,11 @@ and ready for use with Packer. It attempts to be quite minimal while allowing
 other Packer provisioning methods to further build the system.
 
 You can also use the [preseed.cfg](preseeds/preseed.cfg) file without Packer.
-I've added a small `serve_preseed.py` script in the
-[preseeds](preseeds) directory that allows you to serve the
-[preseed.cfg](preseeds/preseed.cfg) file up without Packer if desired. It works
-great with virtualbox as the DHCP server, but you have to manually type the installer boot parameters. Please give me comments/feedback if
-you have issues on your system.
+I've added a small `serve_preseed.py` script in the [preseeds](preseeds)
+directory that allows you to serve the [preseed.cfg](preseeds/preseed.cfg) file
+up without Packer if desired. It works great with virtualbox as the DHCP
+server, but you have to manually type the installer boot parameters. Please
+give comments/feedback if you have issues on your system.
 
 ## Packer
 
@@ -36,23 +36,42 @@ To run ONLY a specific builder use the -only option:
 packer build -only="virtualbox-iso" template.json
 ```
 
-#### Override Variables
+### Override Template Variables (only some examples)
 
-The shell provisioner `bootstrap.sh` will install the `salt-master` and
-`salt-minion` daemons by default. To run a builder that changes the default
-salt-bootstrap arguments you can override the `salt-bootstrap-args` variable in
+#### Pass A Variable To the `template.json` File
+
+The [template.json](template.json) file exposes variables for the Packer build.
+Some variables come from the preseeding phase, while others may come from the
+builder/provider or provisioning stages. Please see the
+[Packer](https://www.packer.io/) docs for more info.
+
+An example that passes a template user variable for the hostname:
+
+```sh
+packer build -var "hostname=webserver-prod" template.json
+```
+
+#### Pass Arguments To Provisioner Scripts Thru The `template.json` File
+
+The [bootstrap.sh](bootstrap.sh) provisioner script will execute
+[salt-bootstrap.sh](https://github.com/saltstack/salt-bootstrap) to install the
+`salt-master` and `salt-minion` daemons by default. To change the variables
+passed in to `bootstrap.sh`, which in turn get passed to `salt-bootstrap.sh`,
+override the default arguments in the `salt-bootstrap-args` variable in
 [template.json](template.json). _(see the
 [salt-bootstrap.sh](https://github.com/saltstack/salt-bootstrap) source for all
 options)_.
 
-###### This option skips a salt install
+Passing the `-N` option will skip a Salt install all together:
 
 ```sh
 packer build -var "salt-bootstrap-args=-N" template.json
 ```
 
+#### Pass Entire Variable Files
+
 To run a build with preset [template.json](template.json) user variables, pass
-in a .json variable file _(or multiple files)_. Premade variable files are
+in a .json variable file _(or multiple files)_. Pre-made variable files are
 stored in the [environments](environments) directory. For instance, to build
 Ubuntu Desktop instead of the default Ubuntu Server 14.04, pass the
 [environments/desktop.json](environments/desktop.json) variable file at the
@@ -68,7 +87,7 @@ _(run `packer inspect template.json` to see all variables that are exposed in
 ## Vagrant Box
 
 For the "virtualbox-iso" builder, the default user will be `Vagrant
-User`,username= `vagrant`, password= `vagrant`. This build will be immediately
+User`,username=`vagrant`, password=`vagrant`. This build will be immediately
 ready for use. `vagrant up` will add a local vagrant box named `packer-ubuntu`,
 unless there is already a `packer-ubuntu` box added. (_See Note_)
 
@@ -133,7 +152,7 @@ config.vm.synced_folder "/srv/", "/srv/", create: true, :mount_options => ["ro"]
 
 ###### Currently builds will not preseed salt-keys
 
-To bypass intial salt-key configuration call the highstate like a masterless node:
+To bypass initial salt-key configuration call the highstate like a masterless node:
 
 ```sh
 sudo salt-call --local state.highstate
@@ -154,7 +173,7 @@ To create a USB Drive from an Ubuntu .iso. _(Works on Mac OS X only)_
 ```
 
 Follow the prompts, you will need to have an Ubuntu iso image to use. A future
-version may be capable of creating usb drives from a packer build. You can find
+version may be capable of creating USB drives from a packer build. You can find
 Ubuntu .iso downloads [here](http://www.ubuntu.com/download).
 
 ## Contributing
