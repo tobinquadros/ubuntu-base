@@ -23,10 +23,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # SYNCED_FOLDER: Uncomment to share the host machine's salt-tree (read-only).
   # config.vm.synced_folder "/srv/", "/srv/", create: true, :mount_options => ["ro"]
 
-  # PROVIDER: you can set Virtualbox to match your cloud provider's settings.
+  # VIRTUALBOX: you can match cloud provider's settings.
   config.vm.provider :virtualbox do |vb|
     vb.gui = $vb_gui
     vb.customize ["modifyvm", :id, "--memory", "512"]
     vb.customize ["modifyvm", :id, "--cpus", "1"]
+  end
+
+  # DOCKER: vagrant up --provider=docker will build the dockerfile in this dir.
+  config.vm.provider :docker do |docker|
+    docker.build_dir = "."
   end
 end

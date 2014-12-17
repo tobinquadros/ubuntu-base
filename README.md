@@ -36,7 +36,7 @@ To run ONLY a specific builder use the -only option:
 packer build -only="virtualbox-iso" template.json
 ```
 
-### Override Template Variables (only some examples)
+### Override Template Variables (just a few examples)
 
 #### Pass A Variable To the `template.json` File
 
@@ -48,7 +48,7 @@ builder/provider or provisioning stages. Please see the
 An example that passes a template user variable for the hostname:
 
 ```sh
-packer build -var "hostname=webserver-prod" template.json
+packer build -var "hostname=webserver" template.json
 ```
 
 #### Pass Arguments To Provisioner Scripts Thru The `template.json` File
@@ -73,12 +73,13 @@ packer build -var "salt-bootstrap-args=-N" template.json
 To run a build with preset [template.json](template.json) user variables, pass
 in a .json variable file _(or multiple files)_. Pre-made variable files are
 stored in the [environments](environments) directory. For instance, to build
-Ubuntu Desktop instead of the default Ubuntu Server 14.04, pass the
-[environments/desktop.json](environments/desktop.json) variable file at the
-command line. You can also create a new variable files and save a custom build.
+Ubuntu Server 14.10 instead of the default Ubuntu Server 14.04, pass the
+[environments/server-1410.json](environments/server-1410.json) variable file at
+the command line. You can also create a new variable files and save a custom
+build.
 
 ```sh
-packer build -var-file="environments/desktop.json" template.json
+packer build -var-file "environments/server-1410.json" template.json
 ```
 
 _(run `packer inspect template.json` to see all variables that are exposed in
@@ -174,7 +175,7 @@ To create a USB Drive from an Ubuntu .iso. _(Works on Mac OS X only)_
 
 Follow the prompts, you will need to have an Ubuntu iso image to use. A future
 version may be capable of creating USB drives from a packer build. You can find
-Ubuntu .iso downloads [here](http://www.ubuntu.com/download).
+Ubuntu images and hashes [here](http://releases.ubuntu.com).
 
 ## Contributing
 

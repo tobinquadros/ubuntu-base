@@ -103,13 +103,20 @@ sudo mkfs -t ext4 /dev/sdb1
 
 ###### OR:
 
-Use a specific filesystem builder, ext* fs defaults are stored in `/etc/mke2fs.conf`:
+Use a specific filesystem builder, ext{2,3,4} defaults are stored in `/etc/mke2fs.conf`:
 ```bash
 # -b = blocksize
 sudo mkfs.ext4 -L LABEL -b 1024 /dev/sdb1
 ```
 
-#### Tune filesystem
+#### Dump filesystem block info
+
+Show detailed filesystem info.
+```bash
+sudo dumpe2fs /dev/sdb1
+```
+
+#### Adjust tuneable filesystem parameters
 
 Adjust options on ext* fs, see `man tune2fs` for more info:
 ```bash

@@ -1,8 +1,0 @@
-{
-  "edition": "desktop",
-  "iso_url": "http://releases.ubuntu.com/14.04.1/ubuntu-14.04.1-desktop-amd64.iso",
-  "iso_checksum": "119cb63b48c9a18f31f417f09655efbd",
-  "iso_checksum_type": "md5",
-  "disk_size" : 8000,
-  "headless": "false"
-}

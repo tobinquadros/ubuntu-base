@@ -1,0 +1,7 @@
+{
+  "headless": "false",
+  "hostname": "server-1410",
+  "iso_checksum": "91bd1cfba65417bfa04567e4f64b5c55",
+  "iso_checksum_type": "md5",
+  "iso_url": "http://releases.ubuntu.com/utopic/ubuntu-14.10-server-amd64.iso"
+}
