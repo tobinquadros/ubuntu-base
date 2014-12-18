@@ -25,9 +25,9 @@ Create a new partition on the device:
 ```
 ###### OR:
 
-Non-interactive from the command line:
+Non-interactive from the command line (1MiB for alignment):
 ```bash
-sudo parted -s -a optimal /dev/sdb mktable gpt mkpart primary 0% 100%
+sudo parted -s -a optimal /dev/sdb mktable gpt mkpart primary 1MiB 100%
 ```
 
 #### Partition the device with a master boot record (MBR, msdos)
@@ -87,14 +87,19 @@ sudo apt-get install -y lvm2  # executable is `lvm`
 
 Use `man lvm` or `man 'lvm subcommand'` liberally.
 
-## Filesystems
+## Filesystems & Swap Areas
 
 View the filesystems currently available with the running kernel:
 ```bash
 cat /proc/filesystems
 ```
 
-#### Format a filesystem
+View system specific hierarchy info:
+```bash
+man hier
+```
+
+### EXT Filesystems
 
 Create a supported filesystem with the `mkfs` front-end:
 ```bash
@@ -118,12 +123,23 @@ sudo dumpe2fs /dev/sdb1
 
 #### Adjust tuneable filesystem parameters
 
-Adjust options on ext* fs, see `man tune2fs` for more info:
+Adjust options on ext{2,3,4}, see `man tune2fs` for more info:
 ```bash
 # -m = reserve space percentage, default %5
 sudo tune2fs -m 0 /dev/sdb1
 ```
 
+### Swap Areas
+
+Initialize swap partition
+```bash
+sudo mkswap /dev/sdb1
+```
+
+Activate swap partition
+```bash
+sudo swapon /dev/sdb1
+```
 ## Mount Device
 
 #### Manually mount

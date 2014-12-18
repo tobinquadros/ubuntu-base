@@ -97,6 +97,7 @@ added box will be started which will not be the most recent build. To prevent
 confusion, after a build is complete I run.
 
 ```bash
+vagrant destroy
 vagrant box remove packer-ubuntu
 vagrant up
 vagrant ssh  # optional, sometimes the VB GUI is needed
