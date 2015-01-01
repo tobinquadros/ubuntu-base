@@ -5,16 +5,16 @@
 
 ## Preseeding
 
-The [preseed.cfg](preseeds/preseed.cfg) configuration file is fully automated
-and ready for use with Packer. It attempts to be quite minimal while allowing
-other Packer provisioning methods to further build the system.
+The [preseed.cfg](preseeds/preseed.cfg) file is fully automated and ready for
+use with Packer. It attempts to be quite minimal while allowing other Packer
+provisioning methods to further build the system.
 
-You can also use the [preseed.cfg](preseeds/preseed.cfg) file without Packer.
-I've added a small `serve_preseed.py` script in the [preseeds](preseeds)
-directory that allows you to serve the [preseed.cfg](preseeds/preseed.cfg) file
-up without Packer if desired. It works great with virtualbox as the DHCP
-server, but you have to manually type the installer boot parameters. Please
-give comments/feedback if you have issues on your system.
+You can also use the preseed.cfg file without Packer.  I've added a small
+[serve_preseed.py](preseeds/serve_preseed.py) script in the
+[preseeds](preseeds) directory that allows you to serve the preseed.cfg file up
+without Packer if desired. It works with Virtualbox as the DHCP server, but you
+have to manually type the installer boot parameters. Please give
+comments/feedback if you have issues on your system.
 
 ## Packer
 
@@ -38,6 +38,9 @@ packer build -only="virtualbox-iso" template.json
 
 ### Override Template Variables (just a few examples)
 
+**Reminder:** Run `packer inspect template.json` to see all variables that are exposed in
+[template.json](template.json).
+
 #### Pass A Variable To the `template.json` File
 
 The [template.json](template.json) file exposes variables for the Packer build.
@@ -53,16 +56,17 @@ packer build -var "hostname=webserver" template.json
 
 #### Pass Arguments To Provisioner Scripts Thru The `template.json` File
 
-The [bootstrap.sh](bootstrap.sh) provisioner script will execute
-[salt-bootstrap.sh](https://github.com/saltstack/salt-bootstrap) to install the
-`salt-master` and `salt-minion` daemons by default. To change the variables
-passed in to `bootstrap.sh`, which in turn get passed to `salt-bootstrap.sh`,
-override the default arguments in the `salt-bootstrap-args` variable in
-[template.json](template.json). _(see the
-[salt-bootstrap.sh](https://github.com/saltstack/salt-bootstrap) source for all
-options)_.
+The [bootstrap.sh](bootstrap.sh) script downloads and executes
+`salt-bootstrap.sh -D -M`, which sets debug-output and installs master and
+minion daemons.. You can control what options are passed to salt-bootstrap.sh
+through the [template.json](template.json) variable `salt-bootstrap-args`.
 
-Passing the `-N` option will skip a Salt install all together:
+**Note:** See the [salt-bootstrap.sh](https://github.com/saltstack/salt-bootstrap)
+source for all options.
+
+So to change the salt install options place space separated flags in the
+`salt-bootstrap-args` variable. Passing just the `-N` option will skip all Salt
+installs:
 
 ```sh
 packer build -var "salt-bootstrap-args=-N" template.json
@@ -75,32 +79,33 @@ in a .json variable file _(or multiple files)_. Pre-made variable files are
 stored in the [environments](environments) directory. For instance, to build
 Ubuntu Server 14.10 instead of the default Ubuntu Server 14.04, pass the
 [environments/server-1410.json](environments/server-1410.json) variable file at
-the command line. You can also create a new variable files and save a custom
-build.
+the command line. You can also create new variable files and save custom
+builds.
 
 ```sh
 packer build -var-file "environments/server-1410.json" template.json
 ```
 
-_(run `packer inspect template.json` to see all variables that are exposed in
-[template.json](template.json))_
-
 ## Vagrant Box
 
-For the "virtualbox-iso" builder, the default user will be `Vagrant
-User`,username=`vagrant`, password=`vagrant`. This build will be immediately
-ready for use. `vagrant up` will add a local vagrant box named `packer-ubuntu`,
-unless there is already a `packer-ubuntu` box added. (_See Note_)
+After a virtualbox build, you will find a
+`packer_virtualbox-iso_virtualbox.box` build artifact in the current working
+directory.
+
+For the "virtualbox-iso" builder, the default user will be `Vagrant User`,
+username=`vagrant`, password=`vagrant`. This build will be immediately ready
+for use. `vagrant up` will add a local Vagrant box named `packer-ubuntu` unless
+there is already a `packer-ubuntu` box added.
 
 **Note:** If you've already added a box named `packer-ubuntu`, the previously
 added box will be started which will not be the most recent build. To prevent
-confusion, after a build is complete I run.
+confusion, after a build is complete run:
 
 ```bash
 vagrant destroy
 vagrant box remove packer-ubuntu
 vagrant up
-vagrant ssh  # optional, sometimes the VB GUI is needed
+vagrant ssh  # optional, sometimes the VB GUI is desired
 ```
 
 If the vagrant box works as you expected, you may want to add the new box to
@@ -108,17 +113,14 @@ Vagrant under a different name. Maybe something that will be used on multiple
 systems.
 
 ```sh
-vagrant box add my_ubuntu packer_virtualbox-iso_virtualbox.box
+vagrant box add "my_ubuntu" "packer_virtualbox-iso_virtualbox.box"
 ```
 
 Use `--force` to replace a previous box:
 
 ```sh
-vagrant box add --force my_ubuntu packer_virtualbox-iso_virtualbox.box
+vagrant box add --force "my_ubuntu" "packer_virtualbox-iso_virtualbox.box"
 ```
-
-After a build, you will find the `packer_virtualbox-iso_virtualbox.box` build
-artifact in the current working directory.
 
 ## Provisioning
 
@@ -168,20 +170,21 @@ sudo salt-key -A  # Accepts all keys (insecure, OK for testing)
 
 ## USB Drive
 
-To create a USB Drive from an Ubuntu .iso. _(Works on Mac OS X only)_
+**Note**: Currently OS X only _(odd, eh?)_. You will need to have an Ubuntu iso
+image to use. You can find Ubuntu images and hashes
+[here](http://releases.ubuntu.com).
+
+
+To create a USB Drive from an Ubuntu .iso:
 
 ```sh
-./make_usb.sh
+./make_usb.sh  # then follow prompts
 ```
-
-Follow the prompts, you will need to have an Ubuntu iso image to use. A future
-version may be capable of creating USB drives from a packer build. You can find
-Ubuntu images and hashes [here](http://releases.ubuntu.com).
 
 ## Contributing
 
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
+3. Commit your changes (`git commit -m 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
