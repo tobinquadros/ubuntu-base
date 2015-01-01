@@ -36,12 +36,12 @@ To run ONLY a specific builder use the -only option:
 packer build -only="virtualbox-iso" template.json
 ```
 
-### Override Template Variables (just a few examples)
+### Overriding `template.json` Variables
 
 **Reminder:** Run `packer inspect template.json` to see all variables that are exposed in
 [template.json](template.json).
 
-#### Pass A Variable To the `template.json` File
+#### User Variables For Packer
 
 The [template.json](template.json) file exposes variables for the Packer build.
 Some variables come from the preseeding phase, while others may come from the
@@ -54,7 +54,7 @@ An example that passes a template user variable for the hostname:
 packer build -var "hostname=webserver" template.json
 ```
 
-#### Pass Arguments To Provisioner Scripts Thru The `template.json` File
+#### Variables As Arguments For Shell Provisioner Scripts
 
 The [bootstrap.sh](bootstrap.sh) script downloads and executes
 `salt-bootstrap.sh -D -M`, which sets debug-output and installs master and
@@ -72,7 +72,7 @@ installs:
 packer build -var "salt-bootstrap-args=-N" template.json
 ```
 
-#### Pass Entire Variable Files
+#### Pass Entire Pre-made Variable Files
 
 To run a build with preset [template.json](template.json) user variables, pass
 in a .json variable file _(or multiple files)_. Pre-made variable files are
@@ -86,7 +86,7 @@ builds.
 packer build -var-file "environments/server-1410.json" template.json
 ```
 
-## Vagrant Box
+## Vagrant For Virtualbox Builds
 
 After a virtualbox build, you will find a
 `packer_virtualbox-iso_virtualbox.box` build artifact in the current working
