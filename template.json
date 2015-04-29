@@ -3,10 +3,12 @@
     "do-api-token": "DIGITALOCEAN_API_TOKEN",
     "headless": "false",
     "hostname": "ubuntu-1404",
+    "install_chef_client": "false",
+    "install_salt": "false",
     "iso_checksum": "83aabd8dcf1e8f469f3c72fff2375195",
     "iso_checksum_type": "md5",
     "iso_url": "http://releases.ubuntu.com/trusty/ubuntu-14.04.2-server-amd64.iso",
-    "salt-bootstrap-options": "-N",
+    "salt_bootstrap_options": "-D",
     "ssh_username": "root",
     "sudo_password": ""
   },
@@ -17,14 +19,29 @@
       "script": "bootstrap.sh",
       "execute_command": "echo {{ user `sudo_password` }} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
       "environment_vars": [
-        "COMPACT=true",
-        "DISABLE_ROOT=true",
-        "INSTALL_SALT=true",
-        "SALT_BOOTSTRAP_OPTIONS={{ user `salt-bootstrap-options` }}",
-        "SETUP_GRUB=true",
-        "SETUP_VAGRANT=true",
-        "UPGRADE=true"
-      ]
+        "COMPACT=false",
+        "DISABLE_ROOT=false",
+        "DIST_UPGRADE=false",
+        "INSTALL_CHEF_CLIENT={{ user `install_chef_client` }}",
+        "INSTALL_SALT={{ user `install_salt` }}",
+        "SALT_BOOTSTRAP_OPTIONS={{ user `salt_bootstrap_options` }}",
+        "SETUP_GRUB=false",
+        "SETUP_VAGRANT=false"
+      ],
+      "override": {
+        "virtualbox-iso": {
+          "environment_vars": [
+            "COMPACT=false",
+            "DISABLE_ROOT=false",
+            "DIST_UPGRADE=false",
+            "INSTALL_CHEF_CLIENT={{ user `install_chef_client` }}",
+            "INSTALL_SALT={{ user `install_salt` }}",
+            "SALT_BOOTSTRAP_OPTIONS={{ user `salt_bootstrap_options` }}",
+            "SETUP_GRUB=true",
+            "SETUP_VAGRANT=true"
+          ]
+        }
+      }
     }
   ],
 
