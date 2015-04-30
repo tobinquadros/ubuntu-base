@@ -78,6 +78,11 @@
         "hostname={{ user `hostname` }} ",
         "initrd=/install/initrd.gz -- <enter>"
       ]
+    },
+    {
+      "type": "docker",
+      "image": "ubuntu:14.04",
+      "commit": true
     }
   ]
 }
