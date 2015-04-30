@@ -1,6 +1,5 @@
 {
   "variables": {
-    "do-api-token": "DIGITALOCEAN_API_TOKEN",
     "headless": "false",
     "hostname": "ubuntu-1404",
     "install_chef_client": "false",
@@ -79,13 +78,6 @@
         "hostname={{ user `hostname` }} ",
         "initrd=/install/initrd.gz -- <enter>"
       ]
-    },
-    {
-      "type": "digitalocean",
-      "api_token": "{{ user `do-api-token` }}",
-      "size": "512mb",
-      "region": "nyc3",
-      "image": "ubuntu-14-04-x64"
     }
   ]
 }
