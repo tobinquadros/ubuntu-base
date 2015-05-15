@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
-# make_installer.sh
 # Creates an Ubuntu USB drive installer from OS X.
 
 # Convert file
