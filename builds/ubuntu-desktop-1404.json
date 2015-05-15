@@ -1,0 +1,8 @@
+{
+  "build_name": "ubuntu-desktop-1404",
+  "headless": "false",
+  "hostname": "ubuntu-desktop-1404",
+  "iso_checksum": "119cb63b48c9a18f31f417f09655efbd",
+  "iso_checksum_type": "md5",
+  "iso_url": "http://releases.ubuntu.com/trusty/ubuntu-14.04.1-desktop-amd64.iso"
+}

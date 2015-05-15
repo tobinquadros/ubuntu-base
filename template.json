@@ -1,7 +1,7 @@
 {
   "variables": {
     "headless": "false",
-    "hostname": "ubuntu-1404",
+    "hostname": "ubuntu-server-1404",
     "install_chef_client": "false",
     "install_salt": "false",
     "iso_checksum": "83aabd8dcf1e8f469f3c72fff2375195",
@@ -11,6 +11,45 @@
     "ssh_username": "root",
     "sudo_password": ""
   },
+
+  "push": {
+      "name": "tobinquadros/ubuntu-base"
+  },
+
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+      "headless": "{{ user `headless` }}",
+      "guest_os_type": "Ubuntu_64",
+      "iso_url": "{{ user `iso_url` }}",
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+      "http_directory" : "preseeds",
+      "http_port_min" : 8000,
+      "http_port_max" : 8000,
+      "hard_drive_interface": "sata",
+      "iso_interface": "sata",
+      "disk_size" : 8000,
+      "ssh_username": "{{ user `ssh_username` }}",
+      "ssh_key_path": "{{ pwd }}/preseeds/id_rsa",
+      "ssh_wait_timeout": "60m",
+      "shutdown_command": "echo {{ user `sudo_password` }} | sudo -S shutdown -P now",
+      "boot_command" : [
+        "<esc><esc><enter><wait>",
+        "/install/vmlinuz noapic ",
+        "auto=true ",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+        "vga=normal fb=false ",
+        "hostname={{ user `hostname` }} ",
+        "initrd=/install/initrd.gz -- <enter>"
+      ]
+    },
+    {
+      "type": "docker",
+      "image": "ubuntu:14.04",
+      "commit": true
+    }
+  ],
 
   "provisioners": [
     {
@@ -48,41 +87,6 @@
     {
       "type": "vagrant",
       "only": ["virtualbox-iso"]
-    }
-  ],
-
-  "builders": [
-    {
-      "type": "virtualbox-iso",
-      "headless": "{{ user `headless` }}",
-      "guest_os_type": "Ubuntu_64",
-      "iso_url": "{{ user `iso_url` }}",
-      "iso_checksum": "{{ user `iso_checksum` }}",
-      "iso_checksum_type": "{{ user `iso_checksum_type` }}",
-      "http_directory" : "preseeds",
-      "http_port_min" : 8000,
-      "http_port_max" : 8000,
-      "hard_drive_interface": "sata",
-      "iso_interface": "sata",
-      "disk_size" : 8000,
-      "ssh_username": "{{ user `ssh_username` }}",
-      "ssh_key_path": "{{ pwd }}/preseeds/id_rsa",
-      "ssh_wait_timeout": "60m",
-      "shutdown_command": "echo {{ user `sudo_password` }} | sudo -S shutdown -P now",
-      "boot_command" : [
-        "<esc><esc><enter><wait>",
-        "/install/vmlinuz noapic ",
-        "auto=true ",
-        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
-        "vga=normal fb=false ",
-        "hostname={{ user `hostname` }} ",
-        "initrd=/install/initrd.gz -- <enter>"
-      ]
-    },
-    {
-      "type": "docker",
-      "image": "ubuntu:14.04",
-      "commit": true
     }
   ]
 }

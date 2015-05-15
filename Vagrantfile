@@ -14,7 +14,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # BOX: Spin up the Packer build stored in this directory.
   # config.vm.box = "ubuntu/trusty64"
-  config.vm.box = "packer-ubuntu"
+  config.vm.box = "tobinquadros/ubuntu-base"
   config.vm.box_url = "file://packer_virtualbox-iso_virtualbox.box"
 
   # NETWORK: The first interface must be NAT for Vagrant to connect the first time.
@@ -32,7 +32,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   # DOCKER: vagrant up --provider=docker will build the dockerfile in this dir.
-  config.vm.provider :docker do |docker|
-    docker.build_dir = "."
-  end
+  # config.vm.provider :docker do |docker|
+  #   docker.build_dir = "."
+  # end
 end

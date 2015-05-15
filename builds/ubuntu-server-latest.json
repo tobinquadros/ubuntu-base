@@ -1,0 +1,8 @@
+{
+  "build_name": "ubuntu-server-latest",
+  "headless": "false",
+  "hostname": "ubuntu-server-latest",
+  "iso_checksum": "487f4a81f22f8597503db3d51a1b502e",
+  "iso_checksum_type": "md5",
+  "iso_url": "http://releases.ubuntu.com/15.04/ubuntu-15.04-server-amd64.iso"
+}
