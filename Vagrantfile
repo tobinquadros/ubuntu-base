@@ -10,7 +10,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Turn on GUI mode for better debugging capability. To access Grub prompt in
   # Virtualbox, click inside VM window while Virtualbox splash-screen is
   # displayed, immediately hold <SHIFT> for Grub2 or <ESC> for Grub legacy.
-  $vb_gui = true
+  $vb_gui = false
 
   # BOX: Spin up the Packer build stored in this directory.
   # config.vm.box = "ubuntu/trusty64"
@@ -19,7 +19,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # NETWORK: The first interface must be NAT for Vagrant to connect the first time.
   # This will be the second interface.
-  config.vm.network "private_network", ip: "192.168.100.100"
+  config.vm.network "private_network", ip: "192.168.33.33"
 
   # SYNCED_FOLDER: Uncomment to share the host machine's salt-tree (read-only).
   # config.vm.synced_folder "/srv/", "/srv/", create: true, :mount_options => ["ro"]
