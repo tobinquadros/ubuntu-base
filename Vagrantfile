@@ -13,6 +13,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   $vb_gui = true
 
   # BOX: Spin up the Packer build stored in this directory.
+  # config.vm.box = "ubuntu/trusty64"
   config.vm.box = "packer-ubuntu"
   config.vm.box_url = "file://packer_virtualbox-iso_virtualbox.box"
 
