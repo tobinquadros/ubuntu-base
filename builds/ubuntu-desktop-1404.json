@@ -1,5 +1,4 @@
 {
-  "build_name": "ubuntu-desktop-1404",
   "headless": "false",
   "hostname": "ubuntu-desktop-1404",
   "iso_checksum": "119cb63b48c9a18f31f417f09655efbd",

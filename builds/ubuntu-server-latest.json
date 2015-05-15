@@ -1,5 +1,4 @@
 {
-  "build_name": "ubuntu-server-latest",
   "headless": "false",
   "hostname": "ubuntu-server-latest",
   "iso_checksum": "487f4a81f22f8597503db3d51a1b502e",

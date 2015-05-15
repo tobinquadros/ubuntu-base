@@ -1,5 +1,4 @@
 {
-  "build_name": "ubuntu-server-1404",
   "headless": "false",
   "hostname": "ubuntu-server-1404",
   "iso_checksum": "83aabd8dcf1e8f469f3c72fff2375195",
