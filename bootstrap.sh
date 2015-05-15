@@ -1,15 +1,15 @@
 #!/bin/bash
-# shell_provisioner.sh
 #
 # This script preps Ubuntu for a Packer build.
 
 # Default some ENV variable settings.
 COMPACT=${COMPACT:-"false"}
 DISABLE_ROOT=${DISABLE_ROOT:-"false"}
+DIST_UPGRADE=${DIST_UPGRADE:-"false"}
+INSTALL_CHEF_CLIENT=${INSTALL_CHEF_CLIENT:-"false"}
 INSTALL_SALT=${INSTALL_SALT:-"false"}
 SETUP_GRUB=${SETUP_GRUB:-"false"}
 SETUP_VAGRANT=${SETUP_VAGRANT:-"false"}
-UPGRADE=${UPGRADE:-"false"}
 
 # ==============================================================================
 # FUNCTION DEFINITIONS
@@ -55,19 +55,34 @@ disable_root() {
   fi
 }
 
+# Fetch updates from /etc/apt/sources.list package indexes, then APT dist-upgrade packages.
+dist_upgrade() {
+  echo "dist_upgrade() function called"
+  if [ "$DIST_UPGRADE" = "true" ]; then
+    sudo apt-get update
+    sudo apt-get dist-upgrade -y
+  else
+    echo "Skipping dist-upgrade."
+  fi
+}
+
+# Tested on Ubuntu 14.04
+install_chef_client() {
+  echo "install_chef_client() function called"
+  if [ "$INSTALL_CHEF_CLIENT" = "true" ]; then
+    echo "Installing Chef client..."
+    wget -O - https://opscode.com/chef/install.sh | sudo bash
+  else
+    echo "Skipping Chef client install."
+  fi
+}
+
 # Tested on Ubuntu 14.04
 install_salt() {
   echo "install_salt() function called"
   if [ "$INSTALL_SALT" = "true" ]; then
     echo "Installing Salt..."
-    wget -O - https://bootstrap.saltstack.com | sudo sh -s -- $SALT_BOOTSTRAP_OPTIONS
-    # Setup firewall for default salt-master (4505), and salt-minion (4506) ports.
-    # Test with: nmap -sS -q -p 4505-4506 localhost
-    # sudo ufw app update Salt
-    # sudo ufw allow Salt
-    # Ensure services recognize any configurations.
-    sudo service salt-master restart
-    sudo service salt-minion restart
+    wget -O - http://bootstrap.saltstack.com | sudo sh -s -- $SALT_BOOTSTRAP_OPTIONS
   else
     echo "Skipping Salt install."
   fi
@@ -89,6 +104,14 @@ parse_options() {
         DISABLE_ROOT="true"
         shift
         ;;
+      --dist-upgrade)
+        DIST_UPGRADE="true"
+        shift
+        ;;
+      --install-chef-client)
+        INSTALL_CHEF_CLIENT="true"
+        shift
+        ;;
       --install-salt)
         INSTALL_SALT="true"
         shift
@@ -104,8 +127,15 @@ parse_options() {
         SETUP_VAGRANT="true"
         shift
         ;;
-      --upgrade)
-        UPGRADE="true"
+      -a | --all)
+        COMPACT="true"
+        DISABLE_ROOT="true"
+        DIST_UPGRADE="true"
+        INSTALL_CHEF_CLIENT="true"
+        INSTALL_SALT="true"
+        SETUP_GRUB="true"
+        SETUP_VAGRANT="true"
+        echo "Running all options..."
         shift
         ;;
       ?*) # Invalid option.
@@ -145,8 +175,8 @@ setup_vagrant() {
       --shell /bin/bash \
       vagrant
     # Minimal user environment
-    sudo cp /etc/skel/.* /home/vagrant/
-    sed -i s/\#force_color_prompt=yes/force_color_prompt=yes/ /home/vagrant.bashrc
+    sudo cp /etc/skel/.* /home/vagrant/ &>/dev/null
+    sed -i s/\#force_color_prompt=yes/force_color_prompt=yes/ /home/vagrant/.bashrc
     # Give password-less sudo priveledges, ensure privs are good.
     echo "vagrant ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/vagrant
     sudo chown root:root /etc/sudoers.d/vagrant
@@ -157,9 +187,9 @@ setup_vagrant() {
     sudo chmod 0600 /home/vagrant/.ssh/authorized_keys || { echo "~/.ssh/authorized_keys error!!!"; exit 1; }
     sudo chown -R vagrant:vagrant /home/vagrant/.ssh
     sudo echo "UseDNS no" >> /etc/ssh/sshd_config
-    # Install VB guest additions, build-essential is preseeded.
+    # Install VB guest additions, build-essential should already be preseeded.
     sudo apt-get install -y build-essential linux-headers-$(uname -r) dkms
-    sudo mount -o loop VBoxGuestAdditions.iso /media/cdrom
+    sudo mount -o loop,ro /root/VBoxGuestAdditions.iso /media/cdrom
     sudo sh /media/cdrom/VBoxLinuxAdditions.run
     sudo umount /media/cdrom
   else
@@ -174,36 +204,27 @@ show_usage() {
 USAGE: $0 [--options]
 
 OPTIONS:
-  --compact                 Improve disk compression capability.
-  --disable-root            Disable the root account password.
-  --help                    Show this help menu.
-  --install-salt            Install Salt. No custom args.
-  --salt-bootstrap-args=ARG Agruments for salt-bootstrap.sh.
+  --compact                 Improve disk compression capability
+  --disable-root            Disable the root account password
+  --dist-upgrade            Perform APT dist-upgrade
+  --help                    Show this help menu
+  --install-chef-client     Install Chef client
+  --install-salt            Install Salt
+  --salt-bootstrap-args=ARG Agruments for salt-bootstrap.sh
                             See: https://github.com/saltstack/salt-bootstrap
-  --setup-grub              Setup more verbose Grub2 bootloader configuration.
-  --setup-vagrant           Setup a proper Vagrant User.
-  --upgrade                 Perform dist-upgrade.
+  --setup-grub              Setup more verbose Grub2 bootloader configuration
+  --setup-vagrant           Setup a proper Vagrant User
 
 DEFAULTS:
   Compact NOT performed
   Root password NOT disabled
+  APT dist-upgrade NOT performed
+  Chef client NOT installed
   Salt NOT installed
-  Grub NOT setup
+  Verbose Grub NOT setup
   Vagrant NOT setup
-  Upgrade NOT performed
 
 EOF
-}
-
-# Fetch updates from /etc/apt/sources.list package indexes, then upgrade packages.
-upgrade() {
-  echo "upgrade() function called"
-  if [ "$UPGRADE" = "true" ]; then
-    sudo apt-get update
-    sudo apt-get dist-upgrade -y
-  else
-    echo "Skipping upgrade."
-  fi
 }
 
 # ==============================================================================
@@ -213,13 +234,16 @@ upgrade() {
 # Get the command line options that were passed.
 parse_options "$@"
 
+# APT dist-upgrade the system.
+dist_upgrade
+
 # Setup the box for a default 'vagrant' user.
 setup_vagrant
 
-# Upgrade the selected updates.
-upgrade
+# Install Chef client
+install_chef_client
 
-# Install Salt (optional)
+# Install Salt
 install_salt
 
 # Clean up caches and old config files left around, manage the packagelist.

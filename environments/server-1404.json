@@ -1,6 +1,7 @@
 {
   "headless": "false",
   "hostname": "server-1404",
+  "install_chef_client": "true",
   "iso_checksum": "83aabd8dcf1e8f469f3c72fff2375195",
   "iso_checksum_type": "md5",
   "iso_url": "http://releases.ubuntu.com/trusty/ubuntu-14.04.2-server-amd64.iso"
