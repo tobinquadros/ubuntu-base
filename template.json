@@ -1,12 +1,12 @@
 {
   "variables": {
     "headless": "false",
-    "hostname": "ubuntu-server-1404",
+    "hostname": "",
     "install_chef_client": "false",
     "install_salt": "false",
-    "iso_checksum": "9e5fecc94b3925bededed0fdca1bd417",
-    "iso_checksum_type": "md5",
-    "iso_url": "http://releases.ubuntu.com/trusty/ubuntu-14.04.3-server-amd64.iso",
+    "iso_checksum": "",
+    "iso_checksum_type": "",
+    "iso_url": "",
     "salt_bootstrap_options": "-D",
     "ssh_username": "root",
     "sudo_password": ""
