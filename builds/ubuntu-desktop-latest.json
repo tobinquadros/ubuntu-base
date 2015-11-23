@@ -1,0 +1,7 @@
+{
+  "headless": "false",
+  "hostname": "ubuntu-desktop-latest",
+  "iso_checksum": "ece816e12f97018fa3d4974b5fd27337",
+  "iso_checksum_type": "md5",
+  "iso_url": "http://releases.ubuntu.com/trusty/ubuntu-15.10-desktop-amd64.iso"
+}
