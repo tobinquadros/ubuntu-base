@@ -1,8 +1,16 @@
-*.box
+# System
+.DS_Store
+
+# Editors
 *~
 .*.sw[a-z]
-.DS_Store
+
+# Creds
+atlas_token
+
+# Build artifacts and output
+*.box
 .vagrant/
 output-virtualbox-iso/
 packer_cache/
-atlas_token
+vagrant-boxes/

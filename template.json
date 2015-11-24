@@ -88,7 +88,8 @@
   "post-processors": [
     {
       "type": "vagrant",
-      "only": ["virtualbox-iso"]
+      "only": ["virtualbox-iso"],
+      "output": "vagrant-boxes/packer_{{ .BuildName }}_{{ user `hostname` }}.box"
     }
   ]
 }
