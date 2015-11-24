@@ -1,4 +1,7 @@
 *.box
+*~
+.*.sw[a-z]
+.DS_Store
 .vagrant/
 output-virtualbox-iso/
 packer_cache/
