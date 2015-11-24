@@ -1,5 +1,6 @@
 {
   "variables": {
+    "atlas_token": "{{ env `ATLAS_TOKEN` }}",
     "headless": "false",
     "hostname": "",
     "install_chef_client": "false",

@@ -5,3 +5,4 @@
 .vagrant/
 output-virtualbox-iso/
 packer_cache/
+atlas_token
