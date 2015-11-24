@@ -3,14 +3,13 @@
     "atlas_token": "{{ env `ATLAS_TOKEN` }}",
     "atlas_username": "",
     "docker-image": "",
+    "dist_upgrade": "false",
     "headless": "false",
     "hostname": "",
     "install_chef_client": "false",
-    "install_salt": "false",
     "iso_checksum": "",
     "iso_checksum_type": "",
     "iso_url": "",
-    "salt_bootstrap_options": "-D",
     "ssh_username": "root",
     "sudo_password": ""
   },
@@ -78,18 +77,20 @@
   "provisioners": [
     {
       "type": "shell",
-      "script": "bootstrap.sh",
       "only": ["virtualbox-iso"],
       "execute_command": "echo {{ user `sudo_password` }} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
       "environment_vars": [
-        "COMPACT=false",
-        "DISABLE_ROOT=false",
-        "DIST_UPGRADE=false",
-        "INSTALL_CHEF_CLIENT={{ user `install_chef_client` }}",
-        "INSTALL_SALT={{ user `install_salt` }}",
-        "SALT_BOOTSTRAP_OPTIONS={{ user `salt_bootstrap_options` }}",
-        "SETUP_GRUB=true",
-        "SETUP_VAGRANT=true"
+        "DIST_UPGRADE={{ user `dist_upgrade` }}",
+        "INSTALL_CHEF_CLIENT={{ user `install_chef_client` }}"
+      ],
+      "scripts": [
+        "scripts/dist_upgrade.sh",
+        "scripts/setup_vagrant.sh",
+        "scripts/chef.sh",
+        "scripts/clean_up.sh",
+        "scripts/setup_grub.sh",
+        "scripts/compact.sh",
+        "scripts/disable_root.sh"
       ]
     }
   ],
@@ -98,7 +99,7 @@
     {
       "type": "vagrant",
       "only": ["virtualbox-iso"],
-      "output": "vagrant-boxes/packer_{{ .BuildName }}_{{ user `hostname` }}.box"
+      "output": "vagrant-boxes/{{ user `hostname` }}-{{ .Provider }}.box"
     }
   ]
 }
