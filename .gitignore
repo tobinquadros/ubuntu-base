@@ -11,6 +11,7 @@ atlas_token
 # Build artifacts and output
 *.box
 .vagrant/
+docker-images/
 output-virtualbox-iso/
 packer_cache/
 vagrant-boxes/

@@ -1,6 +1,8 @@
 {
   "variables": {
     "atlas_token": "{{ env `ATLAS_TOKEN` }}",
+    "atlas_username": "",
+    "docker-image": "",
     "headless": "false",
     "hostname": "",
     "install_chef_client": "false",
@@ -14,7 +16,10 @@
   },
 
   "push": {
-      "name": "tobinquadros/ubuntu-base"
+      "name": "{{ user `atlas_username` }}/{{ user `hostname` }}",
+      "base_dir": ".",
+      "token": "{{ user `atlas_token` }}",
+      "vcs": true
   },
 
   "builders": [
@@ -48,8 +53,8 @@
     },
     {
       "type": "docker",
-      "image": "ubuntu:14.04",
-      "commit": true
+      "image": "{{ user `docker-image` }}",
+      "export_path": "docker-images/{{ user `hostname` }}.tar"
     }
   ],
 
@@ -57,6 +62,7 @@
     {
       "type": "shell",
       "script": "bootstrap.sh",
+      "only": ["virtualbox-iso"],
       "execute_command": "echo {{ user `sudo_password` }} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
       "environment_vars": [
         "COMPACT=false",
@@ -65,23 +71,9 @@
         "INSTALL_CHEF_CLIENT={{ user `install_chef_client` }}",
         "INSTALL_SALT={{ user `install_salt` }}",
         "SALT_BOOTSTRAP_OPTIONS={{ user `salt_bootstrap_options` }}",
-        "SETUP_GRUB=false",
-        "SETUP_VAGRANT=false"
-      ],
-      "override": {
-        "virtualbox-iso": {
-          "environment_vars": [
-            "COMPACT=false",
-            "DISABLE_ROOT=false",
-            "DIST_UPGRADE=false",
-            "INSTALL_CHEF_CLIENT={{ user `install_chef_client` }}",
-            "INSTALL_SALT={{ user `install_salt` }}",
-            "SALT_BOOTSTRAP_OPTIONS={{ user `salt_bootstrap_options` }}",
-            "SETUP_GRUB=true",
-            "SETUP_VAGRANT=true"
-          ]
-        }
-      }
+        "SETUP_GRUB=true",
+        "SETUP_VAGRANT=true"
+      ]
     }
   ],
 
