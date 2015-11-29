@@ -1,6 +1,6 @@
 {
   "variables": {
-    "atlas_token": "{{ env `ATLAS_TOKEN` }}",
+    "atlas_token": "",
     "atlas_username": "",
     "docker-image": "",
     "dist_upgrade": "false",

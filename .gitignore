@@ -5,8 +5,8 @@
 *~
 .*.sw[a-z]
 
-# Creds
-atlas_token
+# Atlas creds
+var-files/atlas.json
 
 # Build artifacts and output
 *.box
