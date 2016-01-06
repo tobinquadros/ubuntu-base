@@ -7,6 +7,7 @@
 
 # Atlas creds
 var-files/atlas.json
+var-files/aws.json
 
 # Build artifacts and output
 *.box

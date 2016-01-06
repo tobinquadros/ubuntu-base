@@ -6,7 +6,7 @@ dist_upgrade() {
     sudo apt-get update
     sudo apt-get dist-upgrade -y
   else
-    echo "Skipping dist-upgrade."
+    echo "Skipping dist_upgrade."
   fi
 }
 

@@ -11,7 +11,10 @@
     "iso_checksum_type": "",
     "iso_url": "",
     "ssh_username": "root",
-    "sudo_password": ""
+    "sudo_password": "",
+    "region": "",
+    "subnet_id": "",
+    "vpc_id": ""
   },
 
   "push": {
@@ -59,6 +62,16 @@
       "type": "docker",
       "image": "{{ user `docker-image` }}",
       "export_path": "docker-images/{{ user `hostname` }}.tar"
+    },
+    {
+      "type": "amazon-ebs",
+      "ami_name": "ubuntu-packer-build-{{timestamp}}",
+      "instance_type": "t2.nano",
+      "source_ami": "ami-49055223",
+      "ssh_username": "ubuntu",
+      "region": "{{ user `region` }}",
+      "subnet_id": "{{ user `subnet_id` }}",
+      "vpc_id": "{{ user `vpc_id` }}"
     }
   ],
 
@@ -67,16 +80,23 @@
       "type": "shell",
       "only": ["virtualbox-iso"],
       "execute_command": "echo {{ user `sudo_password` }} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
+      "scripts": [
+        "scripts/setup_vagrant.sh",
+        "scripts/setup_grub.sh"
+      ]
+    },
+    {
+      "type": "shell",
+      "except": ["docker"],
+      "execute_command": "echo {{ user `sudo_password` }} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
       "environment_vars": [
         "DIST_UPGRADE={{ user `dist_upgrade` }}",
         "INSTALL_CHEF_CLIENT={{ user `install_chef_client` }}"
       ],
       "scripts": [
         "scripts/dist_upgrade.sh",
-        "scripts/setup_vagrant.sh",
         "scripts/chef.sh",
         "scripts/clean_up.sh",
-        "scripts/setup_grub.sh",
         "scripts/compact.sh",
         "scripts/disable_root.sh"
       ]
