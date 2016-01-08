@@ -2,24 +2,26 @@
   "variables": {
     "atlas_token": "",
     "atlas_username": "",
-    "docker-image": "",
+    "disable_root": "false",
     "dist_upgrade": "false",
+    "docker-image": "",
     "headless": "false",
     "hostname": "",
     "install_chef_client": "false",
     "iso_checksum": "",
     "iso_checksum_type": "",
     "iso_url": "",
-    "ssh_username": "root",
-    "sudo_password": "",
+    "kernel_upgrade": "false",
     "region": "",
+    "source_ami": "",
     "subnet_id": "",
+    "sudo_password": "",
     "vpc_id": ""
   },
 
   "push": {
-      "name": "{{ user `atlas_username` }}/{{ user `hostname` }}",
       "base_dir": ".",
+      "name": "{{ user `atlas_username` }}/{{ user `hostname` }}",
       "token": "{{ user `atlas_token` }}",
       "vcs": true
   },
@@ -27,22 +29,6 @@
   "builders": [
     {
       "type": "virtualbox-iso",
-      "headless": "{{ user `headless` }}",
-      "guest_os_type": "Ubuntu_64",
-      "iso_url": "{{ user `iso_url` }}",
-      "iso_checksum": "{{ user `iso_checksum` }}",
-      "iso_checksum_type": "{{ user `iso_checksum_type` }}",
-      "http_directory" : "preseeds",
-      "http_port_min" : 8000,
-      "http_port_max" : 8000,
-      "hard_drive_interface": "sata",
-      "iso_interface": "sata",
-      "disk_size" : 8000,
-      "ssh_username": "{{ user `ssh_username` }}",
-      "ssh_key_path": "{{ pwd }}/preseeds/id_rsa",
-      "ssh_wait_timeout": "60m",
-      "shutdown_command": "echo {{ user `sudo_password` }} | sudo -S shutdown -P now",
-      "vm_name": "{{ user `hostname` }}",
       "boot_command" : [
         "<esc><wait>",
         "<esc><wait>",
@@ -56,20 +42,37 @@
         "initrd=/install/initrd.gz ",
         "-- ",
         "<enter><wait>"
-      ]
+      ],
+      "disk_size" : 8000,
+      "guest_os_type": "Ubuntu_64",
+      "hard_drive_interface": "sata",
+      "headless": "{{ user `headless` }}",
+      "http_directory" : "preseeds",
+      "http_port_max" : 8000,
+      "http_port_min" : 8000,
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+      "iso_interface": "sata",
+      "iso_url": "{{ user `iso_url` }}",
+      "shutdown_command": "echo {{ user `sudo_password` }} | sudo -S shutdown -P now",
+      "ssh_key_path": "{{ pwd }}/preseeds/id_rsa",
+      "ssh_username": "root",
+      "ssh_wait_timeout": "60m",
+      "vm_name": "{{ user `hostname` }}"
     },
     {
       "type": "docker",
-      "image": "{{ user `docker-image` }}",
-      "export_path": "docker-images/{{ user `hostname` }}.tar"
+      "export_path": "docker-images/{{ user `hostname` }}.tar",
+      "image": "{{ user `docker-image` }}"
     },
     {
       "type": "amazon-ebs",
+      "ami_description": "ubuntu-hvm-ebs",
       "ami_name": "ubuntu-packer-build-{{timestamp}}",
       "instance_type": "t2.nano",
-      "source_ami": "ami-49055223",
-      "ssh_username": "ubuntu",
       "region": "{{ user `region` }}",
+      "source_ami": "{{ user `source_ami` }}",
+      "ssh_username": "ubuntu",
       "subnet_id": "{{ user `subnet_id` }}",
       "vpc_id": "{{ user `vpc_id` }}"
     }
@@ -87,7 +90,33 @@
     },
     {
       "type": "shell",
-      "except": ["docker"],
+      "only": ["virtualbox-iso", "amazon-ebs"],
+      "execute_command": "echo {{ user `sudo_password` }} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
+      "environment_vars": [
+        "KERNEL_UPGRADE={{ user `kernel_upgrade` }}"
+      ],
+      "scripts": [
+        "scripts/kernel_upgrade.sh"
+      ]
+    },
+    {
+      "type": "shell",
+      "pause_before": "1s",
+      "only": ["docker"],
+      "environment_vars": [
+        "DIST_UPGRADE={{ user `dist_upgrade` }}",
+        "INSTALL_CHEF_CLIENT={{ user `install_chef_client` }}"
+      ],
+      "scripts": [
+        "scripts/dist_upgrade.sh",
+        "scripts/install_chef_client.sh",
+        "scripts/clean_up.sh"
+      ]
+    },
+    {
+      "type": "shell",
+      "pause_before": "1s",
+      "only": ["virtualbox-iso", "amazon-ebs"],
       "execute_command": "echo {{ user `sudo_password` }} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
       "environment_vars": [
         "DIST_UPGRADE={{ user `dist_upgrade` }}",
@@ -95,8 +124,18 @@
       ],
       "scripts": [
         "scripts/dist_upgrade.sh",
-        "scripts/chef.sh",
-        "scripts/clean_up.sh",
+        "scripts/install_chef_client.sh",
+        "scripts/clean_up.sh"
+      ]
+    },
+    {
+      "type": "shell",
+      "only": ["virtualbox-iso", "amazon-ebs"],
+      "execute_command": "echo {{ user `sudo_password` }} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
+      "environment_vars": [
+        "DISABLE_ROOT={{ user `disable_root` }}"
+      ],
+      "scripts": [
         "scripts/compact.sh",
         "scripts/disable_root.sh"
       ]

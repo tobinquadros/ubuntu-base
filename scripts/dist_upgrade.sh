@@ -3,8 +3,8 @@
 dist_upgrade() {
   echo "dist_upgrade() function called"
   if [ "$DIST_UPGRADE" = "true" ]; then
-    sudo apt-get update
-    sudo apt-get dist-upgrade -y
+    apt-get update -y
+    apt-get dist-upgrade -y
   else
     echo "Skipping dist_upgrade."
   fi
