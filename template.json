@@ -1,29 +1,25 @@
 {
+  "description": "Creates and converges builds of Ubuntu for Vagrant, EC2, and Docker",
+
+  "min_packer_version": "0.8.6",
+
   "variables": {
     "atlas_token": "",
     "atlas_username": "",
-    "disable_root": "false",
-    "dist_upgrade": "false",
+    "disable_root": "",
     "docker-image": "",
-    "headless": "false",
+    "headless": "",
     "hostname": "",
-    "install_chef_client": "false",
+    "install_chef_client": "",
     "iso_checksum": "",
     "iso_checksum_type": "",
     "iso_url": "",
-    "kernel_upgrade": "false",
+    "kernel_upgrade": "",
     "region": "",
     "source_ami": "",
     "subnet_id": "",
     "sudo_password": "",
     "vpc_id": ""
-  },
-
-  "push": {
-      "base_dir": ".",
-      "name": "{{ user `atlas_username` }}/{{ user `hostname` }}",
-      "token": "{{ user `atlas_token` }}",
-      "vcs": true
   },
 
   "builders": [
@@ -81,63 +77,44 @@
   "provisioners": [
     {
       "type": "shell",
-      "only": ["virtualbox-iso"],
-      "execute_command": "echo {{ user `sudo_password` }} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
-      "scripts": [
-        "scripts/setup_vagrant.sh",
-        "scripts/setup_grub.sh"
-      ]
-    },
-    {
-      "type": "shell",
       "only": ["virtualbox-iso", "amazon-ebs"],
       "execute_command": "echo {{ user `sudo_password` }} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
       "environment_vars": [
-        "KERNEL_UPGRADE={{ user `kernel_upgrade` }}"
-      ],
-      "scripts": [
-        "scripts/kernel_upgrade.sh"
-      ]
-    },
-    {
-      "type": "shell",
-      "pause_before": "1s",
-      "only": ["docker"],
-      "environment_vars": [
-        "DIST_UPGRADE={{ user `dist_upgrade` }}",
-        "INSTALL_CHEF_CLIENT={{ user `install_chef_client` }}"
-      ],
-      "scripts": [
-        "scripts/dist_upgrade.sh",
-        "scripts/install_chef_client.sh",
-        "scripts/clean_up.sh"
-      ]
-    },
-    {
-      "type": "shell",
-      "pause_before": "1s",
-      "only": ["virtualbox-iso", "amazon-ebs"],
-      "execute_command": "echo {{ user `sudo_password` }} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
-      "environment_vars": [
-        "DIST_UPGRADE={{ user `dist_upgrade` }}",
-        "INSTALL_CHEF_CLIENT={{ user `install_chef_client` }}"
-      ],
-      "scripts": [
-        "scripts/dist_upgrade.sh",
-        "scripts/install_chef_client.sh",
-        "scripts/clean_up.sh"
-      ]
-    },
-    {
-      "type": "shell",
-      "only": ["virtualbox-iso", "amazon-ebs"],
-      "execute_command": "echo {{ user `sudo_password` }} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
-      "environment_vars": [
+        "KERNEL_UPGRADE={{ user `kernel_upgrade` }}",
+        "INSTALL_CHEF_CLIENT={{ user `install_chef_client` }}",
         "DISABLE_ROOT={{ user `disable_root` }}"
       ],
       "scripts": [
+        "scripts/base_upgrades.sh",
+        "scripts/install_chef_client.sh",
+        "scripts/clean_up.sh",
         "scripts/compact.sh",
         "scripts/disable_root.sh"
+      ],
+      "override": {
+        "virtualbox-iso": {
+          "scripts": [
+            "scripts/base_upgrades.sh",
+            "scripts/install_chef_client.sh",
+            "scripts/clean_up.sh",
+            "scripts/compact.sh",
+            "scripts/disable_root.sh",
+            "scripts/setup_vagrant.sh",
+            "scripts/setup_grub.sh"
+          ]
+        }
+      }
+    },
+    {
+      "type": "shell",
+      "only": ["docker"],
+      "environment_vars": [
+        "INSTALL_CHEF_CLIENT={{ user `install_chef_client` }}"
+      ],
+      "scripts": [
+        "scripts/base_upgrades.sh",
+        "scripts/install_chef_client.sh",
+        "scripts/clean_up.sh"
       ]
     }
   ],
@@ -148,5 +125,13 @@
       "only": ["virtualbox-iso"],
       "output": "vagrant-boxes/{{ user `hostname` }}-{{ .Provider }}.box"
     }
-  ]
+  ],
+
+  "push": {
+      "base_dir": ".",
+      "name": "{{ user `atlas_username` }}/{{ user `hostname` }}",
+      "token": "{{ user `atlas_token` }}",
+      "vcs": true
+  }
+
 }

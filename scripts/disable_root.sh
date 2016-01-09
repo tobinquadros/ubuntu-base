@@ -2,9 +2,9 @@ disable_root() {
   echo "disable_root() function called"
   if [ "$DISABLE_ROOT" = "true" ]; then
     # Remove the root account SSH key.
-    sudo rm -rf /root/.ssh/
+    rm -rf /root/.ssh/
     # Expire the root account password.
-    sudo passwd -dl root
+    passwd -dl root
     # Disable the actual root account
     usermod --expiredate 1 root
   else

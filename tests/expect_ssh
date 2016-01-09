@@ -6,6 +6,6 @@ spawn ssh -p 22 vagrant@192.168.33.33
 expect "password: "
 send "vagrant\r"
 expect "$ "
-send "sudo whoami\r"
+send "whoami\r"
 expect "vagrant"
 send "exit\r"

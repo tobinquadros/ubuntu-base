@@ -4,13 +4,13 @@ clean_up() {
   # Check cache size.
   du -sh /var/cache/apt/archives
   # Remove packages that are no longer installed from local cache.
-  sudo apt-get autoclean
+  apt-get autoclean
   # Removes packages installed by other packages and are no longer needed.
-  sudo apt-get autoremove
+  apt-get autoremove
   # Remove any configuration files left behind by packages, if they exist.
-  dpkg --list | grep "^rc" | cut -d " " -f 3 | xargs -r sudo dpkg --purge
+  dpkg --list | grep "^rc" | cut -d " " -f 3 | xargs -r dpkg --purge
   # Check that no dependencies are broken.
-  sudo apt-get check
+  apt-get check
 }
 
 clean_up || echo "clean_up() failed"
