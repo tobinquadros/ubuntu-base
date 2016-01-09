@@ -8,5 +8,4 @@ install_chef_client() {
   fi
 }
 
-# Install Chef client
 install_chef_client || echo "install_chef_client() failed"

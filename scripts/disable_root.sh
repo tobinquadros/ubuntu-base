@@ -1,4 +1,3 @@
-# Expire the root account.
 disable_root() {
   echo "disable_root() function called"
   if [ "$DISABLE_ROOT" = "true" ]; then

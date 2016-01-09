@@ -1,4 +1,4 @@
-# Speed up the grub bootloading process, also more verbose
+# Speed up bootloading process, more verbose for virtualbox low-level debugging
 setup_grub() {
   echo "setup_grub() function called"
   sudo sed -i s/GRUB_TIMEOUT\=10/GRUB_TIMEOUT\=0/ /etc/default/grub

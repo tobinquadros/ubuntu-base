@@ -1,4 +1,4 @@
-# Ensure the vagrant user is ready for immediate usage by vagrant, then exit.
+# Ensure the vagrant user is ready for immediate usage by vagrant.
 setup_vagrant() {
   echo "setup_vagrant() function called"
   echo "Setting up Vagrant..."
@@ -26,5 +26,4 @@ setup_vagrant() {
   sudo apt-get -y install virtualbox-guest-utils
 }
 
-# Setup the box for a default 'vagrant' user.
 setup_vagrant || echo "setup_vagrant() failed"
