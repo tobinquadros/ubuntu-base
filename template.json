@@ -83,10 +83,10 @@
         "INSTALL_CHEF_CLIENT={{ user `install_chef_client` }}"
       ],
       "scripts": [
-        "scripts/base_upgrades.sh",
-        "scripts/install_chef_client.sh",
-        "scripts/apt_clean_up.sh",
-        "scripts/prepare_vagrant_virtualbox.sh"
+        "provisioner_scripts/base_upgrades.sh",
+        "provisioner_scripts/install_chef_client.sh",
+        "provisioner_scripts/apt_clean_up.sh",
+        "provisioner_scripts/prepare_vagrant_virtualbox.sh"
       ]
     },
     {
@@ -96,9 +96,9 @@
         "INSTALL_CHEF_CLIENT={{ user `install_chef_client` }}"
       ],
       "scripts": [
-        "scripts/base_upgrades.sh",
-        "scripts/install_chef_client.sh",
-        "scripts/apt_clean_up.sh"
+        "provisioner_scripts/base_upgrades.sh",
+        "provisioner_scripts/install_chef_client.sh",
+        "provisioner_scripts/apt_clean_up.sh"
       ]
     }
   ],
