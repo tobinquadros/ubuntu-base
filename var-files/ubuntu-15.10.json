@@ -1,7 +1,0 @@
-{
-  "docker-image": "ubuntu:15.10",
-  "hostname": "ubuntu-1510",
-  "iso_checksum": "fb4eef05edcabfc5cccd4cb44f3f9b48",
-  "iso_checksum_type": "md5",
-  "iso_url": "http://releases.ubuntu.com/15.10/ubuntu-15.10-server-amd64.iso"
-}
