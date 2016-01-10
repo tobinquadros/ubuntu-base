@@ -6,15 +6,14 @@
   "variables": {
     "atlas_token": "",
     "atlas_username": "",
-    "disable_root": "",
     "docker-image": "",
     "headless": "",
-    "hostname": "",
     "install_chef_client": "",
     "iso_checksum": "",
     "iso_checksum_type": "",
     "iso_url": "",
     "kernel_upgrade": "",
+    "os_version": "",
     "region": "",
     "source_ami": "",
     "subnet_id": "",
@@ -34,7 +33,7 @@
         "auto=true ",
         "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
         "vga=normal fb=false ",
-        "hostname={{ user `hostname` }} ",
+        "hostname={{ user `os_version` }} ",
         "initrd=/install/initrd.gz ",
         "-- ",
         "<enter><wait>"
@@ -54,17 +53,17 @@
       "ssh_key_path": "{{ pwd }}/preseeds/id_rsa",
       "ssh_username": "root",
       "ssh_wait_timeout": "60m",
-      "vm_name": "{{ user `hostname` }}"
+      "vm_name": "{{ user `os_version` }}"
     },
     {
       "type": "docker",
-      "export_path": "docker-images/{{ user `hostname` }}.tar",
+      "export_path": "docker-images/{{ user `os_version` }}.tar",
       "image": "{{ user `docker-image` }}"
     },
     {
       "type": "amazon-ebs",
-      "ami_description": "ubuntu-hvm-ebs",
-      "ami_name": "ubuntu-packer-build-{{timestamp}}",
+      "ami_description": "Ubuntu image custom built with Packer",
+      "ami_name": "{{ user `os_version` }}-{{timestamp}}",
       "instance_type": "t2.nano",
       "region": "{{ user `region` }}",
       "source_ami": "{{ user `source_ami` }}",
@@ -81,29 +80,14 @@
       "execute_command": "echo {{ user `sudo_password` }} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
       "environment_vars": [
         "KERNEL_UPGRADE={{ user `kernel_upgrade` }}",
-        "INSTALL_CHEF_CLIENT={{ user `install_chef_client` }}",
-        "DISABLE_ROOT={{ user `disable_root` }}"
+        "INSTALL_CHEF_CLIENT={{ user `install_chef_client` }}"
       ],
       "scripts": [
         "scripts/base_upgrades.sh",
         "scripts/install_chef_client.sh",
-        "scripts/clean_up.sh",
-        "scripts/compact.sh",
-        "scripts/disable_root.sh"
-      ],
-      "override": {
-        "virtualbox-iso": {
-          "scripts": [
-            "scripts/base_upgrades.sh",
-            "scripts/install_chef_client.sh",
-            "scripts/clean_up.sh",
-            "scripts/compact.sh",
-            "scripts/disable_root.sh",
-            "scripts/setup_vagrant.sh",
-            "scripts/setup_grub.sh"
-          ]
-        }
-      }
+        "scripts/apt_clean_up.sh",
+        "scripts/prepare_vagrant_virtualbox.sh"
+      ]
     },
     {
       "type": "shell",
@@ -114,7 +98,7 @@
       "scripts": [
         "scripts/base_upgrades.sh",
         "scripts/install_chef_client.sh",
-        "scripts/clean_up.sh"
+        "scripts/apt_clean_up.sh"
       ]
     }
   ],
@@ -123,13 +107,13 @@
     {
       "type": "vagrant",
       "only": ["virtualbox-iso"],
-      "output": "vagrant-boxes/{{ user `hostname` }}-{{ .Provider }}.box"
+      "output": "vagrant-boxes/{{ user `os_version` }}-{{ .Provider }}.box"
     }
   ],
 
   "push": {
       "base_dir": ".",
-      "name": "{{ user `atlas_username` }}/{{ user `hostname` }}",
+      "name": "{{ user `atlas_username` }}/{{ user `os_version` }}",
       "token": "{{ user `atlas_token` }}",
       "vcs": true
   }

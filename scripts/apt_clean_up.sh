@@ -1,6 +1,6 @@
 # Clean up caches and old config files left around, manage the packagelist.
-clean_up() {
-  echo "clean_up() function called"
+apt_clean_up() {
+  echo "apt_clean_up() function called"
   # Check cache size.
   du -sh /var/cache/apt/archives
   # Remove packages that are no longer installed from local cache.
@@ -13,4 +13,4 @@ clean_up() {
   apt-get check
 }
 
-clean_up || echo "clean_up() failed"
+apt_clean_up || echo "apt_clean_up() failed"
