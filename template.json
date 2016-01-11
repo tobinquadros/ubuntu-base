@@ -68,6 +68,9 @@
       "ami_name": "{{ user `os_version` }}-{{timestamp}}",
       "instance_type": "t2.nano",
       "region": "{{ user `region` }}",
+      "run_tags": {
+        "Name": "packer"
+      },
       "source_ami": "{{ user `source_ami` }}",
       "ssh_username": "ubuntu",
       "subnet_id": "{{ user `subnet_id` }}",
