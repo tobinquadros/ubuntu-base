@@ -14,7 +14,8 @@ kernel_upgrade() {
 # Ensure these are available, some packages aren't default on differing images.
 required_packages() {
   apt-get install -y \
-    curl
+    curl \
+    vim
 }
 
 ##############################################################################

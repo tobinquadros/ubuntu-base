@@ -22,8 +22,8 @@ setup_vagrant() {
   chown -R vagrant:vagrant /home/vagrant/.ssh
   echo "UseDNS no" >> /etc/ssh/sshd_config
   sed -i s/PermitRootLogin\ yes/PermitRootLogin\ no/ /etc/ssh/sshd_config
-  # Install VB guest additions
-  apt-get install -y build-essential linux-headers-$(uname -r) dkms
+  # Install VB guest additions, requires build-essentials
+  apt-get install -y linux-headers-$(uname -r) dkms
   mount -o loop,ro /root/VBoxGuestAdditions.iso /media/cdrom
   sh /media/cdrom/VBoxLinuxAdditions.run
   umount /media/cdrom

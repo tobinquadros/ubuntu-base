@@ -2,11 +2,12 @@
   "chef_client_checksum": "8dd4d57880f82fbd65faf66a64a370df5be76248",
   "chef_client_package": "https://opscode-omnibus-packages.s3.amazonaws.com/ubuntu/13.04/x86_64/chef_11.12.8-2_amd64.deb",
   "docker-image": "ubuntu:14.04",
-  "headless": "true",
+  "headless": "false",
   "iso_checksum": "9e5fecc94b3925bededed0fdca1bd417",
   "iso_checksum_type": "md5",
   "iso_url": "http://releases.ubuntu.com/14.04/ubuntu-14.04.3-server-amd64.iso",
   "os_version": "ubuntu-1404",
+  "preseed_file": "preseed.cfg",
   "region": "us-east-1",
   "source_ami": "ami-0021766a"
 }
