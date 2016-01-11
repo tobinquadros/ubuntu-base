@@ -5,7 +5,7 @@ install_chef_client() {
     PACKAGE_NAME=$(basename $CHEF_CLIENT_PACKAGE)
     curl -O $CHEF_CLIENT_PACKAGE
     if [ "$(sha1sum $PACKAGE_NAME | awk '{print $1 }')" = "$CHEF_CLIENT_CHECKSUM" ]; then
-      sudo dpkg -i $PACKAGE_NAME
+      dpkg -i $PACKAGE_NAME
     else
       echo "ERROR: $PACKAGE_NAME checksum mismatch"
       exit 1
