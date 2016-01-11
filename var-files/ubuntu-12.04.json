@@ -1,10 +1,12 @@
 {
+  "chef_client_checksum": "ae97358eb2ca0a2e12cce388e599deb5602be562",
+  "chef_client_package": "https://opscode-omnibus-packages.s3.amazonaws.com/ubuntu/12.04/x86_64/chef_11.12.8-2_amd64.deb",
   "docker-image": "ubuntu:12.04",
-  "os_version": "ubuntu-1204",
   "iso_checksum": "769474248a3897f4865817446f9a4a53",
   "iso_checksum_type": "md5",
   "iso_url": "http://releases.ubuntu.com/12.04/ubuntu-12.04.5-server-amd64.iso",
   "kernel_upgrade": "true",
+  "os_version": "ubuntu-1204",
   "region": "us-east-1",
   "source_ami": "ami-49055223"
 }

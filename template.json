@@ -6,9 +6,10 @@
   "variables": {
     "atlas_token": "",
     "atlas_username": "",
+    "chef_client_checksum": "",
+    "chef_client_package": "",
     "docker-image": "",
     "headless": "",
-    "install_chef_client": "",
     "iso_checksum": "",
     "iso_checksum_type": "",
     "iso_url": "",
@@ -80,11 +81,12 @@
       "execute_command": "echo {{ user `sudo_password` }} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
       "environment_vars": [
         "KERNEL_UPGRADE={{ user `kernel_upgrade` }}",
-        "INSTALL_CHEF_CLIENT={{ user `install_chef_client` }}"
+        "CHEF_CLIENT_PACKAGE={{ user `chef_client_package` }}",
+        "CHEF_CLIENT_CHECKSUM={{ user `chef_client_checksum` }}"
       ],
       "scripts": [
         "provisioner_scripts/base_upgrades.sh",
-        "provisioner_scripts/install_chef_client.sh",
+        "provisioner_scripts/chef_client.sh",
         "provisioner_scripts/apt_clean_up.sh",
         "provisioner_scripts/prepare_vagrant_virtualbox.sh"
       ]
@@ -93,11 +95,12 @@
       "type": "shell",
       "only": ["docker"],
       "environment_vars": [
-        "INSTALL_CHEF_CLIENT={{ user `install_chef_client` }}"
+        "CHEF_CLIENT_PACKAGE={{ user `chef_client_package` }}",
+        "CHEF_CLIENT_CHECKSUM={{ user `chef_client_checksum` }}"
       ],
       "scripts": [
         "provisioner_scripts/base_upgrades.sh",
-        "provisioner_scripts/install_chef_client.sh",
+        "provisioner_scripts/chef_client.sh",
         "provisioner_scripts/apt_clean_up.sh"
       ]
     }

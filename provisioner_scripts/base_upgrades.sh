@@ -11,6 +11,18 @@ kernel_upgrade() {
   fi
 }
 
-apt-get update || echo "apt-get update failed"
-apt-get upgrade -y || echo "apt-get upgrade failed"
-kernel_upgrade || echo "kernel_upgrade() failed"
+# Ensure these are available, some packages aren't default on differing images.
+required_packages() {
+  apt-get install -y \
+    curl \
+    vim
+}
+
+##############################################################################
+# Main
+##############################################################################
+
+apt-get update || echo "FAILED: apt-get update"
+apt-get upgrade -y || echo "FAILED: apt-get upgrade"
+required_packages || echo "FAILED: required_packages()"
+kernel_upgrade || echo "FAILED: kernel_upgrade()"

@@ -55,11 +55,15 @@ prep_compression() {
   rm -rf /EMPTY
 }
 
+##############################################################################
+# Main
+##############################################################################
+
 if [ "$PACKER_BUILDER_TYPE" = "virtualbox-iso" ]; then
-  setup_vagrant || echo "setup_vagrant() failed"
-  setup_grub || echo "setup_grub() failed"
-  disable_root || echo "disable_root() failed"
-  prep_compression || echo "prep_compression() failed"
+  setup_vagrant || echo "FAILED: setup_vagrant()"
+  setup_grub || echo "FAILED: setup_grub()"
+  disable_root || echo "FAILED: disable_root()"
+  prep_compression || echo "FAILED: prep_compression()"
 else
   echo "Skipping prepare_vagrant_virtualbox.sh"
 fi
