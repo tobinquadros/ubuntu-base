@@ -21,7 +21,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "custom" do |custom|
     custom.vm.box = "tobinquadros/custom"
-    custom.vm.box_url = "file://vagrant-boxes/custom-ubuntu-virtualbox.box"
+    custom.vm.box_url = "file://vagrant-boxes/custom-virtualbox.box"
     custom.vm.network "private_network", ip: "192.168.33.34"
   end
 

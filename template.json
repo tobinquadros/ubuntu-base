@@ -121,7 +121,7 @@
     {
       "type": "vagrant",
       "only": ["virtualbox-iso"],
-      "output": "vagrant-boxes/custom-ubuntu-virtualbox.box"
+      "output": "vagrant-boxes/custom-virtualbox.box"
     }
   ],
 
