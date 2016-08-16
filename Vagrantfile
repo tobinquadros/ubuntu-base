@@ -19,7 +19,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   # Official Ubuntu build
-  config.vm.define "xenial" do |xenial|
+  config.vm.define "xenial", autostart: false do |xenial|
     xenial.vm.box = "ubuntu/xenial64"
     xenial.vm.network "private_network", ip: "192.168.33.33"
   end

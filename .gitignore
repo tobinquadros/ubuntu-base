@@ -10,6 +10,7 @@ var-files/atlas.json
 var-files/aws.json
 
 # Build artifacts and output
+*.log
 *.box
 .vagrant/
 docker-images/
