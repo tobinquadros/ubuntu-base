@@ -1,7 +1,7 @@
 {
   "description": "Creates and converges builds of Ubuntu for Vagrant, EC2, and Docker",
 
-  "min_packer_version": "0.8.6",
+  "min_packer_version": "0.10.1",
 
   "variables": {
     "atlas_token": "",
