@@ -1,9 +1,9 @@
 # Update the to newer kernel for docker usage or testing kernels in general.
 kernel_upgrade() {
   echo "kernel_upgrade() function called"
-  if [ "$KERNEL_UPGRADE" = "true" ]; then
-    apt-get install -y linux-image-generic-lts-trusty
-    apt-get install -y linux-headers-generic-lts-trusty
+  if [ -n "$KERNEL_UPGRADE" ]; then
+    apt-get install -y linux-image-generic-lts-${KERNEL_UPGRADE}
+    apt-get install -y linux-headers-generic-lts-${KERNEL_UPGRADE}
     reboot
     sleep 30 # Prevents next script from premature execution
   else
@@ -22,7 +22,7 @@ required_packages() {
 # Main
 ##############################################################################
 
-apt-get update || echo "FAILED: apt-get update"
+apt-get update -qq || echo "FAILED: apt-get update"
 apt-get upgrade -y || echo "FAILED: apt-get upgrade"
 required_packages || echo "FAILED: required_packages()"
 kernel_upgrade || echo "FAILED: kernel_upgrade()"

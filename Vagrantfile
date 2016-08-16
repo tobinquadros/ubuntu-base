@@ -14,16 +14,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #
   # Spin up the Packer builds stored in this directory.
   #
-  config.vm.define "precise" do |precise|
-    precise.vm.box = "tobinquadros/precise"
-    precise.vm.box_url = "file://vagrant-boxes/ubuntu-1204-virtualbox.box"
-    precise.vm.network "private_network", ip: "192.168.33.33"
+  config.vm.define "xenial" do |xenial|
+    xenial.vm.box = "ubuntu/xenial64"
+    xenial.vm.network "private_network", ip: "192.168.33.33"
   end
 
-  config.vm.define "trusty" do |trusty|
-    trusty.vm.box = "tobinquadros/trusty"
-    trusty.vm.box_url = "file://vagrant-boxes/ubuntu-1404-virtualbox.box"
-    trusty.vm.network "private_network", ip: "192.168.33.34"
+  config.vm.define "custom" do |custom|
+    custom.vm.box = "tobinquadros/custom"
+    custom.vm.box_url = "file://vagrant-boxes/custom-ubuntu-virtualbox.box"
+    custom.vm.network "private_network", ip: "192.168.33.34"
   end
 
   #

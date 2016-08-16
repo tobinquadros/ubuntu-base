@@ -6,8 +6,6 @@
   "variables": {
     "atlas_token": "",
     "atlas_username": "",
-    "chef_client_checksum": "",
-    "chef_client_package": "",
     "docker-image": "",
     "headless": "",
     "iso_checksum": "",
@@ -27,9 +25,24 @@
     {
       "type": "virtualbox-iso",
       "boot_command" : [
-        "<esc><wait>",
-        "<esc><wait>",
-        "<enter><wait>",
+        "<enter><f6><esc>",
+        "<bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs>",
+        "<bs><bs><bs>",
         "/install/vmlinuz ",
         "acpi=off ",
         "auto=true ",
@@ -52,7 +65,7 @@
       "iso_interface": "sata",
       "iso_url": "{{ user `iso_url` }}",
       "shutdown_command": "echo {{ user `sudo_password` }} | sudo -S shutdown -P now",
-      "ssh_key_path": "{{ pwd }}/preseeds/id_rsa",
+      "ssh_private_key_file": "{{ pwd }}/preseeds/id_rsa",
       "ssh_username": "root",
       "ssh_wait_timeout": "60m",
       "vm_name": "{{ user `os_version` }}"
@@ -84,13 +97,10 @@
       "only": ["virtualbox-iso", "amazon-ebs"],
       "execute_command": "echo {{ user `sudo_password` }} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
       "environment_vars": [
-        "KERNEL_UPGRADE={{ user `kernel_upgrade` }}",
-        "CHEF_CLIENT_PACKAGE={{ user `chef_client_package` }}",
-        "CHEF_CLIENT_CHECKSUM={{ user `chef_client_checksum` }}"
+        "KERNEL_UPGRADE={{ user `kernel_upgrade` }}"
       ],
       "scripts": [
         "provisioner_scripts/base_upgrades.sh",
-        "provisioner_scripts/chef_client.sh",
         "provisioner_scripts/apt_clean_up.sh",
         "provisioner_scripts/prepare_vagrant_virtualbox.sh"
       ]
@@ -99,12 +109,9 @@
       "type": "shell",
       "only": ["docker"],
       "environment_vars": [
-        "CHEF_CLIENT_PACKAGE={{ user `chef_client_package` }}",
-        "CHEF_CLIENT_CHECKSUM={{ user `chef_client_checksum` }}"
       ],
       "scripts": [
         "provisioner_scripts/base_upgrades.sh",
-        "provisioner_scripts/chef_client.sh",
         "provisioner_scripts/apt_clean_up.sh"
       ]
     }
@@ -114,7 +121,7 @@
     {
       "type": "vagrant",
       "only": ["virtualbox-iso"],
-      "output": "vagrant-boxes/{{ user `os_version` }}-{{ .Provider }}.box"
+      "output": "vagrant-boxes/custom-ubuntu-virtualbox.box"
     }
   ],
 
