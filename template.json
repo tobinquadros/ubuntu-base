@@ -1,5 +1,5 @@
 {
-  "description": "Creates and converges builds of Ubuntu for Vagrant, EC2, and Docker",
+  "description": "Creates builds of Ubuntu for Virtualbox, EC2, and Docker",
 
   "min_packer_version": "0.10.1",
 
