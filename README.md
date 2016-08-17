@@ -3,50 +3,92 @@
 
 # Ubuntu-base
 
-Builds custom Ubuntu images for Docker, Virtualbox (vagrant), and AWS. I mostly
-use this setup to assemble Ubuntu systems that I can break, change, and learn
-from.
+Containers are cool, but sometimes you just need a full VM to investigate or
+develop at the system and kernel level. I use this setup to assemble Ubuntu
+systems that I can break, change, and learn from.
 
-## Preseeding
+This repo enables building of custom Ubuntu images for Virtualbox and Vagrant.
+It will build and deploy artifacts directly to Hashicorp's Atlas service for
+public/private access once you've created your own `atlas.json` var-file.
 
-The [preseed.cfg](preseeds/preseed.cfg) file is fully automated and ready for
-use with Packer. It attempts to be quite minimal while allowing other Packer
-provisioning methods to further build the system if desired.
+## Configuration For Hashicorp's Atlas
 
-## Packer
+_Note:You need an Atlas account to push artifacts to Atlas!_
 
-To find available Packer build options:
+Hashicorp's Atlas service will require the `atlas_token` and `atlas_username`
+variables to be set. Place a file at `var-files/atlas.json` (it's .gitignored)
+with the following key/value pairs.
+
+```json
+{
+  "atlas_username": "username",
+  "atlas_token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+}
+```
+
+The [template.json](template.json) file will accept those variables and push
+vagrant boxes to the specified Atlas account. 
+
+## To Preseed Ubuntu
+
+Preseeding provides a way to set answers to questions asked during the
+installation process without having to manually enter answers while the
+installation is running. This makes it possible to fully automate most
+installations and offers some features not available during normal
+installation. For more info see
+https://help.ubuntu.com/lts/installation-guide/armhf/apb.html
+
+The [preseed.cfg](preseeds/preseed.cfg) file is capabale of full automation and
+ready for use with Packer. It attempts to be minimal while allowing other
+provisioning methods to further build the system if desired. 
+
+## To Kick Off A Build With Packer
+
+Use the [Makefile](Makefile)
+
+```sh
+make build
+```
+
+### To See All Packer Build Options
+
+You can override the Ubuntu version and a few other attributes through the
+[template.json](template.json) file.
 
 ```sh
 packer inspect template.json
 ```
 
-To run all builders (docker, virtualbox, & aws):
+## Vagrant & Virtualbox Artifacts
+
+After a build, you will have two build artifacts:
+
+- Local vagrant box at `./vagrant-boxes/ubuntu-base-virtualbox.box` (.gitignored)
+- Remote vagrant box at atlas.hashicorp.com/username/ubuntu-base with new version
+
+The default user will be username=`vagrant`, password=`vagrant`. 
+
+### To Use The Local Vagrant Box
+
+This is useful for testing a build artifact through the
+[Vagrantfile](Vagrantfile) without having to wait for download from Atlas.
 
 ```sh
-packer build -var-file="var-files/ubuntu.json" template.json
+make pull-local
 ```
 
-To run ONLY a specific builder (use the -only flag):
+### To Use The Atlas (remote) Vagrant Box
+
+Get the latest version of the official vagrant box stored on Atlas
 
 ```sh
-packer build -only="virtualbox-iso" -var-file="var-files/ubuntu.json" template.json
+make pull-remote
 ```
 
-## Vagrant & Virtualbox
+Or, in a new project run
 
-After a virtualbox build, you will find a build artifact located at
-`vagrant-boxes/custom-virtualbox.box`.
-
-The default user will be username=`vagrant`, password=`vagrant`. Running
-`vagrant up` will add a local Vagrant box named `custom`. If you've already
-added the `custom` box, the previous box will be started instead. To remove the
-old and update to the new custom build run:
-
-```bash
-vagrant destroy -f
-vagrant box remove tobinquadros/custom
-vagrant up
+```sh
+vagrant init atlas_username/ubuntu-base
 ```
 
 ## USB Drive
