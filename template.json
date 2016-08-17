@@ -1,24 +1,19 @@
 {
-  "description": "Creates builds of Ubuntu for Virtualbox, EC2, and Docker",
+  "description": "Creates Vagrant builds of Ubuntu for Virtualbox",
 
   "min_packer_version": "0.10.1",
 
   "variables": {
     "atlas_token": "",
     "atlas_username": "",
-    "docker-image": "",
-    "headless": "",
-    "iso_checksum": "",
-    "iso_checksum_type": "",
-    "iso_url": "",
+    "build_name": "ubuntu-base",
+    "headless": "false",
+    "iso_checksum": "d2d939ca0e65816790375f6826e4032f",
+    "iso_checksum_type": "md5",
+    "iso_url": "http://releases.ubuntu.com/16.04/ubuntu-16.04.1-server-amd64.iso",
     "kernel_upgrade": "",
-    "os_version": "",
-    "preseed_file": "",
-    "region": "",
-    "source_ami": "",
-    "subnet_id": "",
-    "sudo_password": "",
-    "vpc_id": ""
+    "preseed_file": "preseed.cfg",
+    "vagrant_box_version": ""
   },
 
   "builders": [
@@ -48,7 +43,7 @@
         "auto=true ",
         "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/{{ user `preseed_file` }} ",
         "vga=normal fb=false ",
-        "hostname={{ user `os_version` }} ",
+        "hostname={{ user `build_name` }}-{{ timestamp }} ",
         "initrd=/install/initrd.gz ",
         "-- ",
         "<enter><wait>"
@@ -64,38 +59,17 @@
       "iso_checksum_type": "{{ user `iso_checksum_type` }}",
       "iso_interface": "sata",
       "iso_url": "{{ user `iso_url` }}",
-      "shutdown_command": "echo {{ user `sudo_password` }} | sudo -S shutdown -P now",
+      "shutdown_command": "sudo -S shutdown -P now",
       "ssh_private_key_file": "{{ pwd }}/preseeds/id_rsa",
       "ssh_username": "root",
-      "ssh_wait_timeout": "60m",
-      "vm_name": "{{ user `os_version` }}"
-    },
-    {
-      "type": "docker",
-      "export_path": "docker-images/{{ user `os_version` }}.tar",
-      "image": "{{ user `docker-image` }}"
-    },
-    {
-      "type": "amazon-ebs",
-      "ami_description": "Ubuntu image custom built with Packer",
-      "ami_name": "{{ user `os_version` }}-{{timestamp}}",
-      "instance_type": "t2.nano",
-      "region": "{{ user `region` }}",
-      "run_tags": {
-        "Name": "packer"
-      },
-      "source_ami": "{{ user `source_ami` }}",
-      "ssh_username": "ubuntu",
-      "subnet_id": "{{ user `subnet_id` }}",
-      "vpc_id": "{{ user `vpc_id` }}"
+      "ssh_wait_timeout": "60m"
     }
   ],
 
   "provisioners": [
     {
       "type": "shell",
-      "only": ["virtualbox-iso", "amazon-ebs"],
-      "execute_command": "echo {{ user `sudo_password` }} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
+      "execute_command": "{{ .Vars }} sudo -E -S sh '{{ .Path }}'",
       "environment_vars": [
         "KERNEL_UPGRADE={{ user `kernel_upgrade` }}"
       ],
@@ -104,30 +78,33 @@
         "provisioner_scripts/apt_clean_up.sh",
         "provisioner_scripts/prepare_vagrant_virtualbox.sh"
       ]
-    },
-    {
-      "type": "shell",
-      "only": ["docker"],
-      "environment_vars": [
-      ],
-      "scripts": [
-        "provisioner_scripts/base_upgrades.sh",
-        "provisioner_scripts/apt_clean_up.sh"
-      ]
     }
   ],
 
   "post-processors": [
-    {
-      "type": "vagrant",
-      "only": ["virtualbox-iso"],
-      "output": "vagrant-boxes/custom-virtualbox.box"
-    }
+    [
+      {
+        "type": "vagrant",
+        "compression_level": 9,
+        "output": "vagrant-boxes/{{ user `build_name` }}-virtualbox.box"
+      },
+      {
+        "type": "atlas",
+        "artifact": "{{ user `atlas_username` }}/{{ user `build_name` }}",
+        "artifact_type": "vagrant.box",
+        "metadata": {
+          "created_at": "{{ timestamp }}",
+          "provider": "virtualbox",
+          "version": "{{ user `vagrant_box_version` }}"
+        },
+        "token": "{{ user `atlas_token` }}"
+      }
+    ]
   ],
 
   "push": {
       "base_dir": ".",
-      "name": "{{ user `atlas_username` }}/{{ user `os_version` }}",
+      "name": "{{ user `atlas_username` }}/{{ user `build_name` }}",
       "token": "{{ user `atlas_token` }}",
       "vcs": true
   }
