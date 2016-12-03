@@ -15,6 +15,8 @@ kernel_upgrade() {
 required_packages() {
   apt-get install -y \
     curl \
+    docker.io \
+    golang \
     vim
 }
 
@@ -23,6 +25,6 @@ required_packages() {
 ##############################################################################
 
 apt-get update -qq || echo "FAILED: apt-get update"
-apt-get upgrade -y || echo "FAILED: apt-get upgrade"
+# apt-get upgrade -y || echo "FAILED: apt-get upgrade"
 required_packages || echo "FAILED: required_packages()"
 kernel_upgrade || echo "FAILED: kernel_upgrade()"
