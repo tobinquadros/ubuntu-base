@@ -2,9 +2,7 @@
 # Creates an Ubuntu USB drive installer from OS X.
 
 # Convert file
-ls -la
-echo "Source: " && read SOURCE
-echo "Target: " && read TARGET
+echo "Source File: " && read SOURCE
 
 # Choose a drive to put the installer on.
 echo -n "Which disk would you like to put the installer on? (eg. disk2): " && read DISK
@@ -16,8 +14,8 @@ if [[ $DISK =~ disk[0-9] ]]; then
     diskutil partitionDisk /dev/$DISK GPT free Ubuntu R 
     diskutil unmountDisk /dev/$DISK
     # Copy installer to USB disk
-    echo "Ready to copy(dd) $TARGET to /dev/$DISK."
-    sudo dd if=$TARGET of=/dev/r${DISK} bs=1m
+    echo "Ready to copy(dd) $SOURCE to /dev/$DISK."
+    sudo dd if=$SOURCE of=/dev/r${DISK} bs=1m
     # Print success if dd finished with no error
     [[ $? -eq 0 ]] && echo "Install complete, reboot your Mac while holding down option."
   else
