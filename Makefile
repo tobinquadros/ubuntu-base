@@ -10,7 +10,6 @@ clean:
 	@vagrant destroy --force ubuntu
 	@vagrant box remove --force --all tobinquadros/ubuntu-base || echo "box tobinquadros/ubuntu not found"
 
-
 build:
-	@ test -f var-files/atlas.json || (echo "You must have an atlas.json var-file, see README.md" && exit 1)
-	packer build -var-file="var-files/atlas.json" template.json
+	@ test -f var-files/vagrant-cloud.json || (echo "You must have a vagrant-cloud.json var-file, see README.md" && exit 1)
+	packer build -var-file="var-files/vagrant-cloud.json" template.json

@@ -8,26 +8,28 @@ develop at the system and kernel level. I use this setup to assemble Ubuntu
 systems that I can break, change, and learn from.
 
 This repo enables building of custom Ubuntu images for Virtualbox and Vagrant.
-It will build and deploy artifacts directly to Hashicorp's Atlas service for
-public/private access once you've created your own `atlas.json` var-file.
+It will build and deploy artifacts directly to Hashicorp's Vagrant Cloud
+service for public or private access if you create your own
+`vagrant_cloud.json` var-file on your local machine.
 
-## Configuration For Hashicorp's Atlas
+## Configuration For Hashicorp's Vagrant Cloud
 
-_Note:You need an Atlas account to push artifacts to Atlas!_
+_Note:You need an Vagrant Cloud account to push artifacts!_
 
-Hashicorp's Atlas service will require the `atlas_token` and `atlas_username`
-variables to be set. Place a file at `var-files/atlas.json` (it's .gitignored)
-with the following key/value pairs.
+Hashicorp's Vagrant Cloud service will require the `vagrant_cloud_token` and
+`vagrant_cloud_username` variables to be set. Place a file at
+`var-files/vagrant_cloud.json` (it's .gitignored) with the following key/value
+pairs.
 
 ```json
 {
-  "atlas_username": "username",
-  "atlas_token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  "vagrant_cloud_username": "username",
+  "vagrant_cloud_token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 }
 ```
 
 The [template.json](template.json) file will accept those variables and push
-vagrant boxes to the specified Atlas account. 
+vagrant boxes to the specified Vagrant Cloud account. 
 
 ## To Preseed Ubuntu
 
@@ -64,22 +66,22 @@ packer inspect template.json
 After a build, you will have two build artifacts:
 
 - Local vagrant box at `./vagrant-boxes/ubuntu-base-virtualbox.box` (.gitignored)
-- Remote vagrant box at atlas.hashicorp.com/username/ubuntu-base with new version
+- Remote vagrant box at https://app.vagrantup.com/tobinquadros/boxes/ubuntu-base with new version
 
 The default user will be username=`vagrant`, password=`vagrant`. 
 
 ### To Use The Local Vagrant Box
 
 This is useful for testing a build artifact through the
-[Vagrantfile](Vagrantfile) without having to wait for download from Atlas.
+[Vagrantfile](Vagrantfile) without having to wait for download from Vagrant Cloud.
 
 ```sh
 make pull-local
 ```
 
-### To Use The Atlas (remote) Vagrant Box
+### To Use The Vagrant Cloud (remote) Vagrant Box
 
-Get the latest version of the official vagrant box stored on Atlas
+Get the latest version of the official vagrant box stored on Vagrant Cloud
 
 ```sh
 make pull-remote
@@ -88,7 +90,7 @@ make pull-remote
 Or, in a new project run
 
 ```sh
-vagrant init atlas_username/ubuntu-base
+vagrant init vagrant_cloud_username/ubuntu-base
 ```
 
 ## USB Drive
@@ -97,16 +99,9 @@ vagrant init atlas_username/ubuntu-base
 find Ubuntu images and hashes [here](http://releases.ubuntu.com).
 
 
-To create a USB Drive from an Ubuntu .iso:
+If for some reason you want to just create a USB Drive from an Ubuntu .iso:
 
 ```sh
 ./make_usb.sh  # then follow prompts
 ```
 
-## Contributing
-
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -m 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
