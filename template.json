@@ -8,9 +8,9 @@
     "vagrant_cloud_username": "",
     "build_name": "ubuntu-base",
     "headless": "false",
-    "iso_checksum": "d2d939ca0e65816790375f6826e4032f",
+    "iso_checksum": "10fcd20619dce11fe094e960c85ba4a9",
     "iso_checksum_type": "md5",
-    "iso_url": "http://releases.ubuntu.com/16.04/ubuntu-16.04.1-server-amd64.iso",
+    "iso_url": "http://releases.ubuntu.com/16.04/ubuntu-16.04.3-server-amd64.iso",
     "kernel_upgrade": "",
     "preseed_file": "preseed.cfg",
     "vagrant_box_version": "0.0.1"
