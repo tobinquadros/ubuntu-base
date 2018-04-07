@@ -1,11 +1,21 @@
 #!/usr/bin/env sh
 # Creates an Ubuntu USB drive installer from OS X.
 
-# Convert file
-echo "Source File: " && read SOURCE
+SOURCE_ISO=$1
+
+if [[ "$#" -ne 1 ]]; then
+  echo "USAGE: $0 <source-iso>"
+  exit 1
+fi
+
+if [[ ! -r $SOURCE_ISO ]]; then
+  echo "ERROR: filename not readable"
+  exit 1
+fi
 
 # Choose a drive to put the installer on.
-echo -n "Which disk would you like to put the installer on? (eg. disk2): " && read DISK
+diskutil list
+echo "Which disk would you like to put the installer on? (eg. disk2): " && read DISK
 
 if [[ $DISK =~ disk[0-9] ]]; then
 
@@ -15,12 +25,12 @@ if [[ $DISK =~ disk[0-9] ]]; then
   if [[ $REPLY =~ ^[Yy]$ ]]; then
 
     # Prepare device to accept installer
-    diskutil partitionDisk /dev/$DISK GPT free ubuntu R
+    diskutil partitionDisk /dev/$DISK GPT ExFat Ubuntu R
     diskutil unmountDisk /dev/$DISK
 
     # Copy installer to USB disk
-    echo "Ready to copy (dd) $SOURCE to /dev/$DISK."
-    sudo dd if=$SOURCE of=/dev/r${DISK} bs=1m
+    echo "Ready to copy (dd) $SOURCE_ISO to /dev/$DISK."
+    sudo dd if=$SOURCE_ISO of=/dev/r${DISK} bs=1m
 
     # Print success if dd finished with no error
     [[ $? -eq 0 ]] && echo "Write completed successfully."
