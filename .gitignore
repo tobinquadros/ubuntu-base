@@ -5,9 +5,10 @@
 *~
 .*.sw[a-z]
 
-# Atlas creds
+# creds
 var-files/atlas.json
 var-files/aws.json
+var-files/vagrant-cloud.json
 
 # Build artifacts and output
 *.log

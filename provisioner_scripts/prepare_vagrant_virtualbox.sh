@@ -17,6 +17,7 @@ setup_vagrant() {
   chmod 0440 /etc/sudoers.d/vagrant
   # Setup ssh for the Vagrant User.
   mkdir -p --mode=0700 /home/vagrant/.ssh
+  # TODO: consider creating public version of key to place in authorized_keys
   wget -qO /home/vagrant/.ssh/authorized_keys https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub
   chmod 0600 /home/vagrant/.ssh/authorized_keys || { echo "~/.ssh/authorized_keys error!!!"; exit 1; }
   chown -R vagrant:vagrant /home/vagrant/.ssh
@@ -34,7 +35,8 @@ setup_grub() {
   echo "setup_grub() function called"
   sed -i s/GRUB_TIMEOUT\=10/GRUB_TIMEOUT\=0/ /etc/default/grub
   sed -i s/GRUB_CMDLINE_LINUX_DEFAULT\=\"quiet\"/GRUB_CMDLINE_LINUX_DEFAULT\=\"\"/ /etc/default/grub
-  update-grub
+  sed -i s/GRUB_HIDDEN_TIMEOUT_QUIET/d /etc/default/grub
+  update-grub2
 }
 
 # Disable the root account on virtualbox

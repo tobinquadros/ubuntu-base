@@ -17,7 +17,16 @@ required_packages() {
     curl \
     docker.io \
     golang \
-    vim
+    vim \
+    # Additional packages for linux kernel development
+    libelf-dev \
+    libncurses5-dev \
+    gcc \
+    make \
+    git \
+    exuberant-ctags \
+    bc \
+    libssl-dev
 }
 
 ##############################################################################

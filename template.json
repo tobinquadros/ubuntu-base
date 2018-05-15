@@ -4,16 +4,16 @@
   "min_packer_version": "0.10.1",
 
   "variables": {
-    "atlas_token": "",
-    "atlas_username": "",
+    "vagrant_cloud_token": "",
+    "vagrant_cloud_username": "",
     "build_name": "ubuntu-base",
     "headless": "false",
-    "iso_checksum": "d2d939ca0e65816790375f6826e4032f",
+    "iso_checksum": "10fcd20619dce11fe094e960c85ba4a9",
     "iso_checksum_type": "md5",
-    "iso_url": "http://releases.ubuntu.com/16.04/ubuntu-16.04.1-server-amd64.iso",
+    "iso_url": "http://releases.ubuntu.com/16.04/ubuntu-16.04.3-server-amd64.iso",
     "kernel_upgrade": "",
     "preseed_file": "preseed.cfg",
-    "vagrant_box_version": ""
+    "vagrant_box_version": "0.0.1"
   },
 
   "builders": [
@@ -89,24 +89,12 @@
         "output": "vagrant-boxes/{{ user `build_name` }}-virtualbox.box"
       },
       {
-        "type": "atlas",
-        "artifact": "{{ user `atlas_username` }}/{{ user `build_name` }}",
-        "artifact_type": "vagrant.box",
-        "metadata": {
-          "created_at": "{{ timestamp }}",
-          "provider": "virtualbox",
-          "version": "{{ user `vagrant_box_version` }}"
-        },
-        "token": "{{ user `atlas_token` }}"
+        "type": "vagrant-cloud",
+        "access_token": "{{ user `vagrant_cloud_token` }}",
+        "box_tag": "{{ user `vagrant_cloud_username` }}/{{ user `build_name` }}",
+        "version": "{{ user `vagrant_box_version` }}"
       }
     ]
-  ],
-
-  "push": {
-      "base_dir": ".",
-      "name": "{{ user `atlas_username` }}/{{ user `build_name` }}",
-      "token": "{{ user `atlas_token` }}",
-      "vcs": true
-  }
+  ]
 
 }

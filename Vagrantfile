@@ -13,7 +13,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Custom Packer Ubuntu build
   config.vm.define "ubuntu", primary: true do |ubuntu|
-    # Pulls from atlas.hasicorp.com/tobinquadros/ubuntu-base unless LOCAL_URL is set
+    # Pulls from https://app.vagrantup.com/tobinquadros/boxes/ubuntu-base unless LOCAL_URL is set
     ubuntu.vm.box = "tobinquadros/ubuntu-base"
 
     # Use `LOCAL_URL=true vagrant up ubuntu` to test a locally built box
