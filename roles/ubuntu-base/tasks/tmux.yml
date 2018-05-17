@@ -1,0 +1,20 @@
+---
+
+- name: install tmux
+  become: true
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - tmux
+    - xsel
+
+- name: git clone tmux plugins
+  git:
+    repo: 'https://github.com/tmux-plugins/tpm'
+    dest: ~/.tmux/plugins/tpm
+
+- name: create tmux configuration file
+  template:
+    dest: ~/.tmux.conf
+    src: templates/.tmux.conf

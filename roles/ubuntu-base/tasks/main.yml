@@ -1,0 +1,18 @@
+---
+- import_tasks: tmux.yml
+  tags: debug
+
+- name: install common no configration needed apt packages
+  become: true
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - subversion
+    - exuberant-ctags
+    - tree
+    - cmake
+    - git
+    - vim
+    - perl-doc
+

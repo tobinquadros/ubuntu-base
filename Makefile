@@ -1,4 +1,10 @@
-.PHONY: build clean pull-local pull-remote
+.PHONY: playbook debug build clean pull-local pull-remote
+
+playbook:
+	ansible-playbook --ask-become-pass -v playbook.yml
+
+debug:
+	ansible-playbook --ask-become-pass -vv --tags=debug playbook.yml
 
 pull-local: clean
 	@LOCAL_URL="true" vagrant up ubuntu
